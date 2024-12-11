@@ -1,0 +1,18 @@
+{
+  "dashboard": {
+    "welcome": "Welcome, {{name}}!",
+    "learnTab": "Learn Vocabulary",
+    "addTab": "Add New Words"
+  },
+  "vocabulary": {
+    "englishWord": "English Word",
+    "vietnameseDefinition": "Vietnamese Definition",
+    "category": "Category",
+    "difficulty": "Difficulty",
+    "addButton": "Add Vocabulary"
+  },
+  "learning": {
+    "checkButton": "Check",
+    "congratulations": "Congratulations! You've completed the vocabulary session."
+  }
+}

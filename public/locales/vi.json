@@ -1,0 +1,18 @@
+{
+    "dashboard": {
+      "welcome": "Xin chào, {{name}}!",
+      "learnTab": "Học Từ Vựng",
+      "addTab": "Thêm Từ Mới"
+    },
+    "vocabulary": {
+      "englishWord": "Từ Tiếng Anh",
+      "vietnameseDefinition": "Nghĩa Tiếng Việt",
+      "category": "Danh Mục",
+      "difficulty": "Độ Khó",
+      "addButton": "Thêm Từ Vựng"
+    },
+    "learning": {
+      "checkButton": "Kiểm Tra",
+      "congratulations": "Chúc mừng! Bạn đã hoàn thành phiên học từ vựng."
+    }
+  }
