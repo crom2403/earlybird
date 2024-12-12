@@ -5,7 +5,7 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { collection, addDoc, writeBatch, doc } from "firebase/firestore"
+import { collection, writeBatch, doc } from "firebase/firestore"
 import { db } from "@/lib/firebase"
 import { useSession } from "next-auth/react"
 import Papa from "papaparse"

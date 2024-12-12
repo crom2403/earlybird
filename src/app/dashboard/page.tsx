@@ -26,7 +26,6 @@ export default async function DashboardPage() {
         <TabsContent value="learn">
           <LearningSession />
         </TabsContent>
-
         <TabsContent value="add">
           <VocabularyForm />
         </TabsContent>

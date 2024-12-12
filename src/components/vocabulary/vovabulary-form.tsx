@@ -23,9 +23,9 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { addDoc, collection } from "firebase/firestore"
-import { db } from "@/lib/firebase"
 import { useSession } from "next-auth/react"
 import { SessionType } from "@/types"
+import { db } from "@/lib/firebase"
 
 // Validation Schema
 const vocabSchema = z.object({
