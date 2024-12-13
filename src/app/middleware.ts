@@ -1,12 +1,14 @@
 // middleware.ts
 import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
-
+import { auth } from "@/lib/firebase"
 export function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname
   console.log(path)
+  const user = auth.currentUser
+  console.log("user" + user)
 
-  const isPublicPath = path === "/login" || path === "/signup"
+  const isPublicPath = path === "/login"
 
   const token = request.cookies.get("auth-storage")?.value || ""
 

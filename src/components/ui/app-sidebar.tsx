@@ -44,7 +44,7 @@ const items = [
 export function AppSidebar() {
   return (
     <Sidebar>
-      <SidebarContent className="dark:bg-[#0b0b0d]">
+      <SidebarContent className="dark:bg-black/80">
         <SidebarGroup>
           <SidebarGroupLabel>Application</SidebarGroupLabel>
           <SidebarGroupContent>

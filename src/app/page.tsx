@@ -5,7 +5,7 @@ import GoogleLoginButton from "@/components/login/GoogleLoginButton"
 
 export default function Home() {
   return (
-    <div className="w-full bg-green-400 relative">
+    <div className="w-full relative">
       {/* <AuroraBackgroundDemo /> */}
       {/* <GridBackgroundDemo /> */}
       <SpotlightPreview />

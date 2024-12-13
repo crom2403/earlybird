@@ -3,6 +3,7 @@ import Header from "@/components/header/Header"
 import React from "react"
 import { SidebarProvider } from "@/components/ui/sidebar"
 import { AppSidebar } from "@/components/ui/app-sidebar"
+import { Toaster } from "sonner"
 
 const App = ({ children }: { children: React.ReactNode }) => {
   return (
@@ -13,6 +14,7 @@ const App = ({ children }: { children: React.ReactNode }) => {
         <div className="w-full flex flex-col">
           <Header />
           {children}
+          <Toaster position="top-center" expand={false} richColors />
         </div>
       </div>
     </SidebarProvider>

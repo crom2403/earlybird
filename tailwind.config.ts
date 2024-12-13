@@ -19,12 +19,12 @@ const config: Config = {
         background: "var(--background)",
         foreground: "var(--foreground)",
         dark: {
-          background: "#121212",
-          foreground: "#ffffff",
+          main_background: "#121212",
+          main_foreground: "#ffffff",
         },
         light: {
-          background: "#ffffff",
-          foreground: "#000000",
+          main_background: "#ffffff",
+          main_foreground: "#000000",
         },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",

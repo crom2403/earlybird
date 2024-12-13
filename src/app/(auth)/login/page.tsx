@@ -1,17 +1,10 @@
 // src/app/(auth)/login/page.tsx
-import { getServerSession } from "next-auth"
-import { redirect } from "next/navigation"
-import { authOptions } from "@/lib/auth"
+// import { getServerSession } from "next-auth"
+// import { redirect } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import GoogleLoginButton from "@/components/login/GoogleLoginButton"
 
 export default async function LoginPage() {
-  const session = await getServerSession(authOptions)
-
-  if (session) {
-    redirect("/dashboard")
-  }
-
   return (
     <div className="flex justify-center items-center min-h-screen">
       <Card className="w-full max-w-md">
