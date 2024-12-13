@@ -45,7 +45,7 @@ export async function POST(request: NextRequest) {
       name: "userData",
       value: JSON.stringify(finalUserData),
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: false,
       maxAge: 60 * 60 * 24 * 7, // 7 ngày
       path: "/",
     })
