@@ -1,4 +1,4 @@
-import { Calendar, Home, Inbox, Search, Settings } from "lucide-react"
+import { CircleHelp, Contact, Home, LayoutDashboard, Rabbit, Settings } from "lucide-react"
 
 import {
   Sidebar,
@@ -11,39 +11,50 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 import Link from "next/link"
+import { pathnames } from "@/utils/pathnames"
 
 // Menu items.
 const items = [
   {
     title: "Home",
-    url: "#",
+    url: pathnames.home,
     icon: Home,
   },
   {
-    title: "Inbox",
-    url: "#",
-    icon: Inbox,
+    title: "Dashboard",
+    url: pathnames.dashboard,
+    icon: LayoutDashboard,
   },
   {
-    title: "Calendar",
-    url: "#",
-    icon: Calendar,
-  },
-  {
-    title: "Search",
-    url: "#",
-    icon: Search,
+    title: "Vocabulary",
+    url: pathnames.vocabulary,
+    icon: Contact,
   },
   {
     title: "Settings",
-    url: "#",
+    url: pathnames.setting,
     icon: Settings,
+  },
+  {
+    title: "Contact",
+    url: pathnames.contact,
+    icon: Contact,
+  },
+  {
+    title: "About",
+    url: pathnames.about,
+    icon: Rabbit,
+  },
+  {
+    title: "Help",
+    url: pathnames.help,
+    icon: CircleHelp,
   },
 ]
 
 export function AppSidebar() {
   return (
-    <Sidebar>
+    <Sidebar className="dark:border-neutral-800">
       <SidebarContent className="dark:bg-black/80">
         <SidebarGroup>
           <SidebarGroupLabel>Application</SidebarGroupLabel>

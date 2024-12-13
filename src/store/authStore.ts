@@ -26,11 +26,12 @@ const useAuthStore = create<AuthStore>()(
           user: userData,
           isAuthenticated: true,
         }),
-      logout: () =>
-        set({
+      logout: () => {
+        return set({
           user: null,
           isAuthenticated: false,
-        }),
+        })
+      },
     }),
     {
       name: "auth-storage",
