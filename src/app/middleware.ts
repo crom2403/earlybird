@@ -1,27 +1,25 @@
-// middleware.ts
-import { NextResponse } from "next/server"
-import type { NextRequest } from "next/server"
-import { auth } from "@/lib/firebase"
-export function middleware(request: NextRequest) {
-  const path = request.nextUrl.pathname
-  console.log(path)
-  const user = auth.currentUser
-  console.log("user" + user)
+import { cookies } from "next/headers"
+import { NextRequest, NextResponse } from "next/server"
+import { decrypt } from "@/app/lib/session"
 
-  const isPublicPath = path === "/login"
+const protectedRoutes = ["/dashboard"]
+const publicRoutes = ["/"]
 
-  const token = request.cookies.get("auth-storage")?.value || ""
+export default async function middleware(req: NextRequest) {
+  const path = req.nextUrl.pathname
+  const isProtectedRoute = protectedRoutes.includes(path)
+  const isPublicRoute = publicRoutes.includes(path)
 
-  if (isPublicPath && token) {
-    return NextResponse.redirect(new URL("/dashboard", request.url))
+  const cookie = cookies().get("session")?.value
+  const session = await decrypt(cookie)
+
+  if (isProtectedRoute && !session?.userId) {
+    return NextResponse.redirect(new URL("/", req.nextUrl))
   }
 
-  if (!isPublicPath && !token) {
-    return NextResponse.redirect(new URL("/login", request.url))
+  if (isPublicRoute && session?.userId) {
+    return NextResponse.redirect(new URL("/dashboard", req.nextUrl))
   }
-}
 
-// Các route cần bảo vệ
-export const config = {
-  matcher: ["/", "/dashboard/:path*", "/profile/:path*", "/login", "/signup"],
+  return NextResponse.next()
 }
