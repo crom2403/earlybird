@@ -1,19 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-
 import { ThemeToggle } from "@/components/ui/theme-toggle"
 import { BellRing, Search } from "lucide-react"
 import Image from "next/image"
 import React from "react"
 import { SidebarTrigger } from "@/components/ui/sidebar"
 import { Input } from "@/components/ui/input"
-// import { getMe } from "@/actions/user-action"
 import IconLoginButton from "@/components/login/IconLoginGoogle"
 import AvatarDropdown from "@/components/header/AvatarDropdown"
-import { getServerSideUser } from "@/app/lib/payload-utils"
+// import { getServerSideUser } from "@/app/lib/payload-utils"
 
-const Header = async () => {
-  // const me = await getMe()
-  const me = await getServerSideUser()
+const Header = async ({ me }: { me: any }) => {
+  // const me = await getServerSideUser()
   return (
     <div className="w-full pl-2 pr-4 min-h-16 dark:bg-black/80 grid grid-cols-3 border-b dark:border-neutral-800 border-neutral-200">
       <div className="flex items-center gap-4">

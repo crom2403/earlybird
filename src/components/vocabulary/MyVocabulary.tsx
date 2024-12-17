@@ -1,6 +1,7 @@
 import React from "react"
 import { Button } from "@/components/ui/button"
 import { Download, Plus } from "lucide-react"
+import Board from "@/components/board/Board"
 
 const MyVocabulary = () => {
   return (
@@ -20,6 +21,9 @@ const MyVocabulary = () => {
           <Download />
           Trích xuất từ văn bản
         </Button>
+      </div>
+      <div className="w-full grid grid-cols-4 gap-4 mt-4">
+        <Board />
       </div>
     </div>
   )

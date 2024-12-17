@@ -3,23 +3,19 @@
 import React from "react"
 import { signInWithGoogle } from "@/lib/firebase"
 import useAuthStore from "@/store/authStore"
-import { useRouter } from "next/navigation"
 import Image from "next/image"
 import { loginAction } from "@/actions/auth-action"
 import { toast } from "sonner"
 
 const GoogleLoginButton: React.FC = () => {
   const { login } = useAuthStore()
-  const router = useRouter()
-
   const handleGoogleLogin = async () => {
     try {
       const userData = await signInWithGoogle()
       login(userData)
       const response = await loginAction(userData)
       if (response.success) {
-        window.location.href = "/"
-        router.push("/dashboard")
+        window.location.reload()
         toast.success(response?.message)
       }
     } catch (error) {

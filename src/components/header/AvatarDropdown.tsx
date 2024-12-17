@@ -10,8 +10,11 @@ import { UserResponse } from "@/types/user"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { LogOut, User } from "lucide-react"
 // import { logout } from "@/actions/user-action"
-
+import { logout } from "@/app/actions"
 const AvatarDropdown = ({ me }: { me: UserResponse }) => {
+  const handleLogout = async () => {
+    await logout()
+  }
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
@@ -23,7 +26,7 @@ const AvatarDropdown = ({ me }: { me: UserResponse }) => {
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
-        <DropdownMenuItem onClick={() => {}}>
+        <DropdownMenuItem onClick={handleLogout}>
           <LogOut /> Đăng xuất
         </DropdownMenuItem>
       </DropdownMenuContent>

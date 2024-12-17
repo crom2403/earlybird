@@ -1,16 +1,13 @@
-// components/GoogleLoginButton.tsx
 "use client"
 import React from "react"
 import { signInWithGoogle } from "@/lib/firebase"
 import useAuthStore from "@/store/authStore"
-import { useRouter } from "next/navigation"
 import Image from "next/image"
 import { loginAction } from "@/actions/auth-action"
 import { toast } from "sonner"
 
 const IconLoginButton: React.FC = () => {
   const { login } = useAuthStore()
-  const router = useRouter()
 
   const handleGoogleLogin = async () => {
     try {
@@ -18,7 +15,7 @@ const IconLoginButton: React.FC = () => {
       login(userData)
       const response = await loginAction(userData)
       if (response.success) {
-        router.push("/dashboard")
+        window.location.reload()
         toast.success(response?.message)
       }
     } catch (error) {
