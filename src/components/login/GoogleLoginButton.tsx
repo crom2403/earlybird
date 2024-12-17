@@ -18,6 +18,7 @@ const GoogleLoginButton: React.FC = () => {
       login(userData)
       const response = await loginAction(userData)
       if (response.success) {
+        window.location.href = "/"
         router.push("/dashboard")
         toast.success(response?.message)
       }

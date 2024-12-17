@@ -1,8 +1,9 @@
-import { cookies } from "next/headers"
+// import { cookies } from "next/headers"
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextRequest, NextResponse } from "next/server"
 import { db } from "@/lib/firebase"
 import { addDoc, collection, getDocs, query, where } from "firebase/firestore"
+import { createSession } from "@/app/lib/session"
 
 const addUser = async (data: any) => {
   try {
@@ -30,30 +31,26 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
     const data = body.formData
-    console.log("body", body)
 
     // Tìm người dùng theo email
-    const user = await findUserByEmail(data.email)
-    console.log("user", user)
-
-    // Nếu người dùng không tồn tại, thêm người dùng mới
-    const finalUserData = user || (await addUser(data))
-
-    // Thiết lập cookie với thông tin người dùng
-    // Sử dụng cookies() từ next/headers thay vì setCookie
-    cookies().set({
-      name: "userData",
-      value: JSON.stringify(finalUserData),
-      httpOnly: true,
-      secure: false,
-      maxAge: 60 * 60 * 24 * 7, // 7 ngày
-      path: "/",
+    const user = await findUserByEmail(data.email).then(async (userOld: any) => {
+      if (userOld) {
+        console.log("userOld", userOld)
+        await createSession(userOld[0]?.uid)
+        return userOld[0]
+      } else {
+        await addUser(data).then(async (newUser) => {
+          console.log("newUser", newUser)
+          await createSession(newUser.uid)
+          return newUser
+        })
+      }
     })
 
     return NextResponse.json({
       success: true,
       message: "Đăng nhập thành công.",
-      user: finalUserData,
+      user,
     })
   } catch (error: any) {
     console.error("Lỗi trong hàm POST: ", error)

@@ -23,14 +23,14 @@ export const signInWithGoogle = async () => {
   try {
     const result = await signInWithPopup(auth, googleProvider)
     const user = result.user
-    const accessToken = await user.getIdToken()
-    console.log(user)
+    // const accessToken = await user.getIdToken()
+    // console.log(user)
     return {
       uid: user.uid,
       displayName: user.displayName,
       email: user.email,
       photoURL: user.photoURL,
-      accessToken,
+      // accessToken,
     }
   } catch (error) {
     console.error("Lỗi đăng nhập Google:", error)
