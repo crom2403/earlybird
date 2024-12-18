@@ -23,6 +23,8 @@ export interface ListColorType {
 export interface BoardType {
   id: string
   color: string
+  createdAt: string
   name: string
+  order?: number
   userId: string
 }

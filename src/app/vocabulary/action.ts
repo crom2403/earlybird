@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // Action Board
 import { db } from "@/lib/firebase"
+import { BoardType } from "@/types/vocabulary"
 import {
   addDoc,
   collection,
@@ -10,6 +11,8 @@ import {
   orderBy,
   serverTimestamp,
   FirestoreError,
+  doc,
+  writeBatch,
 } from "firebase/firestore"
 
 export const createBoard = async (data: any) => {
@@ -31,16 +34,19 @@ export const createBoard = async (data: any) => {
 
 export const getAllBoardByUser = async (userId: string | undefined) => {
   try {
-    // Tạo truy vấn để lấy tất cả các board của người dùng theo userId
     const boardsRef = collection(db, "board")
     const q = query(boardsRef, where("userId", "==", userId), orderBy("createdAt", "desc"))
 
-    // Lấy tất cả các tài liệu từ truy vấn
     const querySnapshot = await getDocs(q)
 
-    // Chuyển đổi các tài liệu thành mảng
-    const boards = querySnapshot.docs.map((doc) => ({
+    // Chuyển đổi các tài liệu thành mảng BoardType
+    const boards: BoardType[] = querySnapshot.docs.map((doc) => ({
       id: doc.id,
+      name: doc.data().name || "",
+      color: doc.data().color || "",
+      createdAt: doc.data().createdAt,
+      userId: doc.data().userId,
+      order: doc.data().order || 0,
       ...doc.data(),
     }))
 
@@ -50,17 +56,39 @@ export const getAllBoardByUser = async (userId: string | undefined) => {
     }
   } catch (error) {
     const firestoreError = error as FirestoreError
-    // Kiểm tra lỗi "index" và gợi ý tạo chỉ mục nếu cần
-    if (firestoreError.code === "failed-precondition") {
-      console.error(
-        "Firestore Index cần được tạo. Hãy truy cập liên kết sau để tạo chỉ mục:",
-        firestoreError.message
-      )
-    }
-
     return {
       success: false,
       message: "Không thể lấy danh sách board, vui lòng thử lại sau.",
+      error: firestoreError,
+    }
+  }
+}
+
+// Hàm cập nhật thứ tự board
+export const updateBoardOrder = async (boards: BoardType[]) => {
+  try {
+    const batch = writeBatch(db)
+
+    // Duyệt và cập nhật order cho từng board
+    boards.forEach((board) => {
+      const boardRef = doc(db, "board", board.id)
+      batch.update(boardRef, { order: board?.order })
+    })
+
+    // Commit batch update
+    await batch.commit()
+
+    return {
+      success: true,
+      message: "Cập nhật thứ tự thành công",
+    }
+  } catch (error) {
+    const firestoreError = error as FirestoreError
+    console.error("Lỗi khi cập nhật thứ tự:", firestoreError)
+
+    return {
+      success: false,
+      message: "Không thể cập nhật thứ tự",
       error: firestoreError,
     }
   }
