@@ -2,6 +2,7 @@ import React from "react"
 import { Button } from "@/components/ui/button"
 import { Download, Plus } from "lucide-react"
 import Board from "@/components/board/Board"
+import ButtonCreateNewBoard from "@/components/vocabulary/ButtonCreateNewBoard"
 
 const MyVocabulary = () => {
   return (
@@ -22,7 +23,12 @@ const MyVocabulary = () => {
           Trích xuất từ văn bản
         </Button>
       </div>
+      <ButtonCreateNewBoard />
       <div className="w-full grid grid-cols-4 gap-4 mt-4">
+        <Board />
+        <Board />
+        <Board />
+        <Board />
         <Board />
       </div>
     </div>

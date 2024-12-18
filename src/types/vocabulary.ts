@@ -14,3 +14,12 @@ export interface VocabularyListProps {
   onEdit?: (vocab: Vocabulary) => void
   onDelete?: (id: string) => void
 }
+
+export interface ListColorType {
+  id: number
+  name: string
+  borderColor: string
+  backgroundColor: string
+  textColor: string
+  bgButton: string
+}
