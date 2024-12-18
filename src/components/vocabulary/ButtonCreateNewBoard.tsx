@@ -68,12 +68,12 @@ const ButtonCreateNewBoard = ({
           Tạo nhóm học phần mới
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px] grid grid-cols-8 gap-0 p-0">
+      <DialogContent className="sm:max-w-[425px] grid grid-cols-8 gap-0 p-0 dark:bg-white dark:text-black">
         <div className="col-span-3 w-full h-full">
           <Image
             src="/gif/background_dialog_cat.gif"
             alt="cat"
-            className="w-full object-cover"
+            className="w-full object-cover rounded-s-md"
             width={150}
             height={220}
           />
@@ -117,7 +117,7 @@ const ButtonCreateNewBoard = ({
           </div>
           <Button
             onClick={handleCreateBoard}
-            className="w-full border-blue-700 bg-blue-100 text-blue-700"
+            className="w-full border-blue-700 bg-blue-100 text-blue-700 dark:border-blue-700 dark:bg-blue-100 dark:text-blue-700"
             variant="outline"
             disabled={isCreating}
           >

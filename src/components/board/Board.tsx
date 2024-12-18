@@ -36,14 +36,14 @@ const Board = ({ boardData }: { boardData: BoardType }) => {
             {boardData.name}
           </p>
         </div>
-        <div className="flex items-center gap-2 text-black">
+        <div className="flex items-center gap-2 text-black hover:cursor-pointer hover:text-blue-600">
           <Ellipsis />
         </div>
       </div>
-      <div className="bg-white rounded-xl px-4 py-2">
+      <div className="bg-white rounded-xl px-4 py-2 cursor-pointer">
         <div className="flex items-center justify-between text-black">
           <div className="font-bold line-clamp-1 w-full">Từ vựng day 1 2 4</div>
-          <div className="w-fit">
+          <div className="w-fit hover:text-blue-600 hover:cursor-pointer">
             <Edit className="size-5" />
           </div>
         </div>
@@ -53,7 +53,7 @@ const Board = ({ boardData }: { boardData: BoardType }) => {
           </div>
         </div>
       </div>
-      <Link href={`/vocabulary/create`}>
+      <Link href={`/vocabulary/create/${boardData.id}`}>
         <div
           className={cn(
             "border-dashed border-2 rounded-xl border-blue-600 bg-blue-100 flex items-center justify-center h-10 text-blue-600",
