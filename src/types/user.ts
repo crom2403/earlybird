@@ -6,3 +6,11 @@ export interface UserResponse {
   accessToken: string
   role: string
 }
+
+export interface User {
+  displayName: string
+  email: string
+  uid: string
+  role: string
+  photoURL: string
+}

@@ -18,8 +18,11 @@ export interface VocabularyListProps {
 export interface ListColorType {
   id: number
   name: string
-  borderColor: string
-  backgroundColor: string
-  textColor: string
-  bgButton: string
+}
+
+export interface BoardType {
+  id: string
+  color: string
+  name: string
+  userId: string
 }

@@ -1,21 +1,64 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
+
 import { Button } from "@/components/ui/button"
 import { Plus } from "lucide-react"
-import React, { useState } from "react"
-import { Dialog, DialogContent, DialogFooter, DialogTrigger } from "@/components/ui/dialog"
+import React, { Dispatch, SetStateAction, useState } from "react"
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { listColor } from "@/utils/contants"
 import { ListColorType } from "@/types/vocabulary"
 import { cn } from "@/lib/utils"
 import Image from "next/image"
+import { createBoard, getAllBoardByUser } from "@/app/vocabulary/action"
+import { toast } from "sonner"
 
-const ButtonCreateNewBoard = () => {
+const ButtonCreateNewBoard = ({
+  userId,
+  setBoards,
+}: {
+  userId: string | undefined
+  setBoards: Dispatch<SetStateAction<any>>
+}) => {
   const [selectColor, setSelectColor] = useState<string>("blue")
   const [nameGroup, setNameGroup] = useState<string>("")
+  const [isShowPopup, setIsShowPopup] = useState(false)
+  const [isCreating, setIsCreating] = useState(false)
+
+  const handleCreateBoard = async () => {
+    if (!nameGroup.trim()) {
+      toast.error("Tên nhóm không được để trống!")
+      return
+    }
+
+    if (userId) {
+      setIsCreating(true)
+      const res = await createBoard({
+        userId,
+        name: nameGroup,
+        color: selectColor,
+      })
+      console.log(res)
+      setIsCreating(false)
+
+      if (res.success) {
+        toast.success("Tạo nhóm thành công!")
+
+        // Fetch lại danh sách boards và cập nhật state
+        const updatedBoards = await getAllBoardByUser(userId)
+        console.log(updatedBoards)
+        if (updatedBoards.success) {
+          setBoards(updatedBoards.boards)
+        }
+      } else {
+        toast.error(res.message)
+      }
+    }
+    setIsShowPopup(false)
+  }
 
   return (
-    <Dialog>
+    <Dialog open={isShowPopup} onOpenChange={setIsShowPopup}>
       <DialogTrigger asChild>
         <Button
           className="border-blue-700 text-blue-700 bg-blue-50 hover:text-blue-500 hover:bg-blue-50 hover:border-blue-500"
@@ -41,33 +84,44 @@ const ButtonCreateNewBoard = () => {
             <Input
               value={nameGroup}
               placeholder="Nhập tên nhóm..."
-              className=""
               onChange={(e) => setNameGroup(e.target.value)}
             />
           </div>
           <div>
             <p>Chọn màu nền:</p>
             <div className="w-full flex gap-2">
-              {listColor.map((el: ListColorType, index: number) => {
-                return (
+              {listColor.map((el: ListColorType, index: number) => (
+                <div
+                  key={index}
+                  onClick={() => setSelectColor(el.name)}
+                  className={cn(
+                    "size-[26px] border-none rounded-full hover:cursor-pointer flex items-center justify-center",
+                    selectColor === el.name ? "border border-black ring-1 ring-black" : ""
+                  )}
+                >
                   <div
-                    key={index}
                     className={cn(
                       "size-6 border-none rounded-full hover:cursor-pointer",
-                      el.name === "blue" ? "bg-blue-600" : "",
-                      el.name === "green" ? "bg-green-600" : "",
-                      el.name === "orange" ? "bg-orange-600" : "",
-                      selectColor === el.name ? "border border-black ring-1 ring-black" : ""
+                      el.name === "blue" ? "bg-board-blue-border" : "",
+                      el.name === "green" ? "bg-board-green-border" : "",
+                      el.name === "orange" ? "bg-board-orange-border" : "",
+                      el.name === "red" ? "bg-board-red-border" : "",
+                      el.name === "mint" ? "bg-board-mint-border" : "",
+                      el.name === "pink" ? "bg-board-pink-border" : "",
+                      el.name === "violet" ? "bg-board-violet-border" : ""
                     )}
-                    onClick={() => setSelectColor(el.name)}
                   />
-                )
-              })}
-              <div className="flex items-center space-x-2"></div>
+                </div>
+              ))}
             </div>
           </div>
-          <Button className="w-full border-blue-700 bg-blue-100 text-blue-700" variant="outline">
-            Tạo mới
+          <Button
+            onClick={handleCreateBoard}
+            className="w-full border-blue-700 bg-blue-100 text-blue-700"
+            variant="outline"
+            disabled={isCreating}
+          >
+            {isCreating ? "Đang tạo..." : "Tạo mới"}
           </Button>
         </div>
       </DialogContent>
