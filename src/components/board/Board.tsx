@@ -43,6 +43,7 @@ import {
 } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { getAllBoardByUser } from "@/app/vocabulary/action"
+import ButtonEditBoard from "@/components/vocabulary/ButtonEditBoard"
 
 const Board = ({ boardData, setBoards }: { boardData: BoardType; setBoards: any }) => {
   const [listSection, setListSection] = useState<ResponseSection[]>([])
@@ -171,14 +172,16 @@ const Board = ({ boardData, setBoards }: { boardData: BoardType; setBoards: any 
               </button>
             </PopoverTrigger>
             <PopoverContent className="w-40 flex flex-col p-0 ">
-              <div className="flex gap-2 hover:bg-slate-800 p-2 rounded-t-sm">
-                <Settings className="size-5" />
-                <p>Sửa</p>
-              </div>
+              <ButtonEditBoard
+                boardId={boardData.id}
+                color={boardData.color}
+                name={boardData.name}
+                setBoards={setBoards}
+              />
 
               <Dialog open={openDeleteDialog} onOpenChange={setOpenDeleteDialog}>
                 <DialogTrigger>
-                  <div className="flex gap-2 hover:bg-slate-800 p-2 rounded-b-sm">
+                  <div className="cursor-pointer bg-white text-black flex gap-2 hover:bg-slate-100 p-2 rounded-b-sm">
                     <Trash2 className="size-5" />
                     <p>Xóa</p>
                   </div>

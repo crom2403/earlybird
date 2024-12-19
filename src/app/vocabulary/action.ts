@@ -14,7 +14,7 @@ import {
   FirestoreError,
   doc,
   writeBatch,
-  // updateDoc,
+  updateDoc,
 } from "firebase/firestore"
 
 export const createBoard = async (data: any) => {
@@ -314,6 +314,32 @@ export const deleteBoardAndSections = async (boardId: string): Promise<ActionRes
     return {
       success: false,
       message: "Không thể xóa nhóm, vui lòng thử lại sau",
+      error: firestoreError,
+    }
+  }
+}
+
+// Thêm interface để định nghĩa kiểu dữ liệu update
+interface UpdateBoardData {
+  name?: string
+  color?: string
+}
+
+export const updateBoard = async (boardId: string, data: UpdateBoardData) => {
+  try {
+    const boardRef = doc(db, "board", boardId)
+    const updateData = { ...data } as { [key: string]: any }
+    await updateDoc(boardRef, updateData)
+
+    return {
+      success: true,
+      message: "Cập nhật nhóm thành công",
+    }
+  } catch (error) {
+    const firestoreError = error as FirestoreError
+    return {
+      success: false,
+      message: "Không thể cập nhật nhóm, vui lòng thử lại sau.",
       error: firestoreError,
     }
   }
