@@ -14,7 +14,7 @@ import {
   FirestoreError,
   doc,
   writeBatch,
-  updateDoc,
+  // updateDoc,
 } from "firebase/firestore"
 
 export const createBoard = async (data: any) => {
@@ -224,35 +224,6 @@ export const updateSectionsOrder = async (
   }
 }
 
-// Di chuyển section sang board khác
-export const moveSectionToBoard = async (
-  sectionId: string,
-  targetBoardId: string,
-  newOrder: number
-) => {
-  try {
-    const sectionRef = doc(db, "section", sectionId)
-
-    await updateDoc(sectionRef, {
-      boardId: targetBoardId,
-      order: newOrder,
-      updatedAt: serverTimestamp(),
-    })
-
-    return {
-      success: true,
-      message: "Di chuyển học phần thành công",
-    }
-  } catch (error) {
-    const firestoreError = error as FirestoreError
-    return {
-      success: false,
-      message: "Không thể di chuyển học phần",
-      error: firestoreError,
-    }
-  }
-}
-
 // Cập nhật nhiều sections cùng lúc khi di chuyển giữa các boards
 export const updateMultipleSections = async (updates: {
   sourceBoardSections: {
@@ -305,36 +276,44 @@ export const updateMultipleSections = async (updates: {
   }
 }
 
-// Lấy sections theo thứ tự
-export const getSortedSections = async (boardId: string) => {
+interface ActionResponse {
+  success: boolean
+  message: string
+  error?: FirestoreError
+}
+
+// Interface cho section cần xóa
+// interface SectionToDelete {
+//   id: string
+//   boardId: string
+// }
+
+// Hàm xóa board và tất cả section liên quan
+export const deleteBoardAndSections = async (boardId: string): Promise<ActionResponse> => {
   try {
+    const batch = writeBatch(db)
+    // 1. Lấy tất cả section thuộc board
     const sectionsRef = collection(db, "section")
-    const q = query(
-      sectionsRef,
-      where("boardId", "==", boardId),
-      orderBy("order", "asc"),
-      orderBy("createdAt", "desc")
-    )
-
+    const q = query(sectionsRef, where("boardId", "==", boardId))
     const querySnapshot = await getDocs(q)
-
-    const sections: ResponseSection[] = querySnapshot.docs.map((doc) => ({
-      id: doc.id,
-      title: doc.data().title,
-      length: doc.data().listInput?.length || 0,
-      order: doc.data().order || 0,
-    }))
-
+    // 2. Thêm các lệnh xóa section vào batch
+    querySnapshot.docs.forEach((doc) => {
+      batch.delete(doc.ref)
+    })
+    // 3. Thêm lệnh xóa board vào batch
+    const boardRef = doc(db, "board", boardId)
+    batch.delete(boardRef)
+    // 4. Thực hiện batch
+    await batch.commit()
     return {
       success: true,
-      sections,
-      message: "Lấy danh sách học phần thành công",
+      message: "Đã xóa nhóm và tất cả học phần thành công",
     }
   } catch (error) {
     const firestoreError = error as FirestoreError
     return {
       success: false,
-      message: "Không thể lấy danh sách học phần",
+      message: "Không thể xóa nhóm, vui lòng thử lại sau",
       error: firestoreError,
     }
   }

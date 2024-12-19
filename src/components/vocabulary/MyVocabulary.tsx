@@ -32,16 +32,13 @@ import { BoardType } from "@/types/vocabulary"
 const SortableBoard = ({ board, children }: { board: BoardType; children: React.ReactNode }) => {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: board.id,
+    disabled: false,
   })
 
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
     cursor: "move",
-    // Shadow khi kéo
-    // boxShadow: isDragging
-    //   ? "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)"
-    //   : "none",
     zIndex: isDragging ? 10 : 1,
     opacity: isDragging ? 0.9 : 1,
   }
@@ -130,7 +127,7 @@ const MyVocabulary = ({ userId }: { userId: string | undefined }) => {
           <div className="w-full grid grid-cols-1 md:grid-cols-4 gap-4 mt-4">
             {boards?.map((board) => (
               <SortableBoard key={board.id} board={board}>
-                <Board boardData={board} />
+                <Board boardData={board} setBoards={setBoards} />
               </SortableBoard>
             ))}
           </div>

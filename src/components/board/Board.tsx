@@ -1,11 +1,17 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client"
-import { getAllSectionOfBoard, ResponseSection, updateSectionsOrder } from "@/app/vocabulary/action"
+import {
+  deleteBoardAndSections,
+  getAllSectionOfBoard,
+  ResponseSection,
+  updateSectionsOrder,
+} from "@/app/vocabulary/action"
 import SectionItem from "@/components/vocabulary/SectionItem"
 import { cn } from "@/lib/utils"
 import { BoardType } from "@/types/vocabulary"
-import { Ellipsis, Plus } from "lucide-react"
+import { Ellipsis, Plus, Settings, Trash2 } from "lucide-react"
 import Link from "next/link"
 import React, { useEffect, useState } from "react"
 import {
@@ -24,9 +30,24 @@ import {
 } from "@dnd-kit/sortable"
 import { toast } from "sonner"
 import SortableSection from "../vocabulary/SortableSection"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogDescription,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import { Button } from "@/components/ui/button"
+import { getAllBoardByUser } from "@/app/vocabulary/action"
 
-const Board = ({ boardData }: { boardData: BoardType }) => {
+const Board = ({ boardData, setBoards }: { boardData: BoardType; setBoards: any }) => {
   const [listSection, setListSection] = useState<ResponseSection[]>([])
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false)
+  const userId = boardData.userId
 
   // Thêm cấu hình sensors
   const sensors = useSensors(
@@ -47,6 +68,26 @@ const Board = ({ boardData }: { boardData: BoardType }) => {
       setListSection(res.sections || [])
     } else {
       setListSection([])
+    }
+  }
+
+  const handleDeleteBoard = async (boardId: string) => {
+    try {
+      const result = await deleteBoardAndSections(boardId)
+      if (result.success) {
+        toast.success(result.message)
+        // Đóng dialog xóa
+        setOpenDeleteDialog(false) // hoặc tên state tương ứng của bạn
+        // Gọi API cập nhật lại danh sách board
+        const updatedBoards = await getAllBoardByUser(userId)
+        if (updatedBoards.success && updatedBoards.boards) {
+          setBoards(updatedBoards.boards)
+        }
+      } else {
+        toast.error(result.message)
+      }
+    } catch (error) {
+      toast.error("Có lỗi xảy ra khi xóa nhóm")
     }
   }
 
@@ -96,8 +137,8 @@ const Board = ({ boardData }: { boardData: BoardType }) => {
         boardData.color === "pink" ? "bg-board-pink-background border-board-pink-border" : ""
       )}
     >
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
+      <div className="flex items-center justify-between relative">
+        <div className="flex-1">
           <p
             className={cn(
               "font-bold text-xl",
@@ -113,8 +154,63 @@ const Board = ({ boardData }: { boardData: BoardType }) => {
             {boardData.name}
           </p>
         </div>
-        <div className="flex items-center gap-2 text-black hover:cursor-pointer hover:text-blue-600">
-          <Ellipsis />
+        <div
+          className="ml-2"
+          onClick={(e) => e.stopPropagation()}
+          onPointerDown={(e) => e.stopPropagation()}
+          onMouseDown={(e) => e.stopPropagation()}
+        >
+          <Popover>
+            <PopoverTrigger asChild>
+              <button
+                type="button"
+                className="text-black hover:cursor-pointer hover:text-blue-600"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <Ellipsis className="size-5" />
+              </button>
+            </PopoverTrigger>
+            <PopoverContent className="w-40 flex flex-col p-0 ">
+              <div className="flex gap-2 hover:bg-slate-800 p-2 rounded-t-sm">
+                <Settings className="size-5" />
+                <p>Sửa</p>
+              </div>
+
+              <Dialog open={openDeleteDialog} onOpenChange={setOpenDeleteDialog}>
+                <DialogTrigger>
+                  <div className="flex gap-2 hover:bg-slate-800 p-2 rounded-b-sm">
+                    <Trash2 className="size-5" />
+                    <p>Xóa</p>
+                  </div>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Xóa</DialogTitle>
+                    <DialogDescription>
+                      Bạn có chắc chắn muốn xóa nhóm này?. Tất cả học phần trong nhóm cũng sẽ bị
+                      xóa!
+                    </DialogDescription>
+                  </DialogHeader>
+                  <DialogFooter className="sm:justify-end">
+                    <DialogClose asChild>
+                      <Button type="button" variant="secondary">
+                        Không
+                      </Button>
+                    </DialogClose>
+                    <Button
+                      type="button"
+                      variant="destructive"
+                      onClick={() => {
+                        handleDeleteBoard(boardData.id)
+                      }}
+                    >
+                      Xóa
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            </PopoverContent>
+          </Popover>
         </div>
       </div>
       <Link href={`/vocabulary/create/${boardData.id}`}>

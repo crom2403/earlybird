@@ -23,7 +23,7 @@ const SectionItem = ({ section, dragHandleProps }: SectionItemProps) => {
       <div className="grid grid-cols-10 text-blue-800 mt-2">
         <Link className="col-span-8" href={`/vocabulary/learn/${section.id}`}>
           <div className=" font-bold w-fit flex-1 text-xs border border-green-600 bg-green-100 text-green-600 px-2 rounded-md">
-            {25} thuật ngữ
+            {section.length} thuật ngữ
           </div>
         </Link>
         <div className="col-span-2" {...dragHandleProps} onClick={(e) => e.preventDefault()}>
