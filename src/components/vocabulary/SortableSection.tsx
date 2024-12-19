@@ -11,6 +11,9 @@ interface SortableSectionProps {
 const SortableSection = ({ section, children }: SortableSectionProps) => {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: section.id,
+    data: {
+      type: "section",
+    },
   })
 
   const style = {
@@ -22,8 +25,10 @@ const SortableSection = ({ section, children }: SortableSectionProps) => {
   }
 
   return (
-    <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
-      {children}
+    <div ref={setNodeRef} style={style}>
+      {React.cloneElement(children as React.ReactElement, {
+        dragHandleProps: { ...attributes, ...listeners },
+      })}
     </div>
   )
 }

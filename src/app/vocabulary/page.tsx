@@ -8,7 +8,7 @@ import { User } from "@/types/user"
 const page = async () => {
   const user: User | undefined = await getServerSideUser()
   return (
-    <div className="container mx-auto p-4">
+    <div className="container mx-auto p-4 ">
       <Tabs defaultValue="my_vocabulary">
         <TabsList className="py-6 px-2">
           <TabsTrigger value="my_vocabulary" className="px-5 py-2">

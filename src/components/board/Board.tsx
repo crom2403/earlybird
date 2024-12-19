@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client"
 import { getAllSectionOfBoard, ResponseSection, updateSectionsOrder } from "@/app/vocabulary/action"
@@ -29,7 +30,12 @@ const Board = ({ boardData }: { boardData: BoardType }) => {
 
   // Thêm cấu hình sensors
   const sensors = useSensors(
-    useSensor(PointerSensor),
+    useSensor(PointerSensor, {
+      // Thêm activationConstraint để chỉ kích hoạt khi kéo
+      activationConstraint: {
+        distance: 8, // Khoảng cách tối thiểu (px) trước khi bắt đầu kéo
+      },
+    }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
     })
