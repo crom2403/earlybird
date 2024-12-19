@@ -1,28 +1,82 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client"
-import { getAllSectionOfBoard, ResponseSection } from "@/app/vocabulary/action"
+import { getAllSectionOfBoard, ResponseSection, updateSectionsOrder } from "@/app/vocabulary/action"
 import SectionItem from "@/components/vocabulary/SectionItem"
 import { cn } from "@/lib/utils"
 import { BoardType } from "@/types/vocabulary"
 import { Ellipsis, Plus } from "lucide-react"
 import Link from "next/link"
 import React, { useEffect, useState } from "react"
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from "@dnd-kit/core"
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+  sortableKeyboardCoordinates,
+} from "@dnd-kit/sortable"
+import { toast } from "sonner"
+import SortableSection from "../vocabulary/SortableSection"
 
 const Board = ({ boardData }: { boardData: BoardType }) => {
   const [listSection, setListSection] = useState<ResponseSection[]>([])
 
+  // Thêm cấu hình sensors
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  )
+
   const handleGetListSection = async () => {
     const res = await getAllSectionOfBoard(boardData.id)
-    console.log(res)
     if (res.success) {
-      setListSection(res.sections || []) // Gán danh sách sections
+      setListSection(res.sections || [])
     } else {
-      setListSection([]) // Nếu không thành công, gán mảng rỗng
+      setListSection([])
     }
   }
+
   useEffect(() => {
     handleGetListSection()
   }, [])
+
+  const handleDragEnd = async (event: DragEndEvent) => {
+    const { active, over } = event
+
+    if (active.id !== over?.id) {
+      const oldIndex = listSection.findIndex((section) => section.id === active.id)
+      const newIndex = listSection.findIndex((section) => section.id === over?.id)
+
+      const updatedSections = [...listSection]
+      const [movedSection] = updatedSections.splice(oldIndex, 1)
+      updatedSections.splice(newIndex, 0, movedSection)
+
+      const sectionsToUpdate = updatedSections.map((section, index) => ({
+        id: section.id,
+        order: index,
+        boardId: boardData.id,
+      }))
+
+      try {
+        const result = await updateSectionsOrder(sectionsToUpdate)
+        if (result.success) {
+          setListSection(updatedSections)
+          toast.success("Cập nhật thứ tự học phần thành công")
+        }
+      } catch (error) {
+        toast.error("Không thể cập nhật thứ tự học phần")
+      }
+    }
+  }
+
   return (
     <div
       className={cn(
@@ -57,9 +111,6 @@ const Board = ({ boardData }: { boardData: BoardType }) => {
           <Ellipsis />
         </div>
       </div>
-      {listSection?.map((section: ResponseSection) => (
-        <SectionItem key={section.id} section={section} />
-      ))}
       <Link href={`/vocabulary/create/${boardData.id}`}>
         <div
           className={cn(
@@ -90,6 +141,19 @@ const Board = ({ boardData }: { boardData: BoardType }) => {
           <Plus className="size-5 mr-2" /> <p>Tạo học phần mới</p>
         </div>
       </Link>
+
+      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+        <SortableContext
+          items={listSection.map((section) => section.id)}
+          strategy={verticalListSortingStrategy}
+        >
+          {listSection?.map((section: ResponseSection) => (
+            <SortableSection key={section.id} section={section}>
+              <SectionItem section={section} />
+            </SortableSection>
+          ))}
+        </SortableContext>
+      </DndContext>
     </div>
   )
 }

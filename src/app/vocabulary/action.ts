@@ -14,6 +14,7 @@ import {
   FirestoreError,
   doc,
   writeBatch,
+  updateDoc,
 } from "firebase/firestore"
 
 export const createBoard = async (data: any) => {
@@ -183,6 +184,157 @@ export const getAllSectionOfBoard = async (boardId: string) => {
     return {
       success: false,
       message: "Không thể lấy danh sách section, vui lòng thử lại sau.", // Sửa thông báo cho đúng ngữ cảnh
+      error: firestoreError,
+    }
+  }
+}
+
+// Cập nhật thứ tự của sections trong cùng một board
+export const updateSectionsOrder = async (
+  sections: {
+    id: string
+    order: number
+    boardId: string
+  }[]
+) => {
+  try {
+    const batch = writeBatch(db)
+
+    sections.forEach((section) => {
+      const sectionRef = doc(db, "section", section.id)
+      batch.update(sectionRef, {
+        order: section.order,
+        boardId: section.boardId,
+      })
+    })
+
+    await batch.commit()
+
+    return {
+      success: true,
+      message: "Cập nhật thứ tự học phần thành công",
+    }
+  } catch (error) {
+    const firestoreError = error as FirestoreError
+    return {
+      success: false,
+      message: "Không thể cập nhật thứ tự học phần",
+      error: firestoreError,
+    }
+  }
+}
+
+// Di chuyển section sang board khác
+export const moveSectionToBoard = async (
+  sectionId: string,
+  targetBoardId: string,
+  newOrder: number
+) => {
+  try {
+    const sectionRef = doc(db, "section", sectionId)
+
+    await updateDoc(sectionRef, {
+      boardId: targetBoardId,
+      order: newOrder,
+      updatedAt: serverTimestamp(),
+    })
+
+    return {
+      success: true,
+      message: "Di chuyển học phần thành công",
+    }
+  } catch (error) {
+    const firestoreError = error as FirestoreError
+    return {
+      success: false,
+      message: "Không thể di chuyển học phần",
+      error: firestoreError,
+    }
+  }
+}
+
+// Cập nhật nhiều sections cùng lúc khi di chuyển giữa các boards
+export const updateMultipleSections = async (updates: {
+  sourceBoardSections: {
+    id: string
+    order: number
+  }[]
+  targetBoardSections: {
+    id: string
+    order: number
+  }[]
+  movedSectionId: string
+  targetBoardId: string
+}) => {
+  try {
+    const batch = writeBatch(db)
+
+    // Cập nhật thứ tự cho các sections trong board nguồn
+    updates.sourceBoardSections.forEach((section) => {
+      const sectionRef = doc(db, "section", section.id)
+      batch.update(sectionRef, { order: section.order })
+    })
+
+    // Cập nhật thứ tự cho các sections trong board đích
+    updates.targetBoardSections.forEach((section) => {
+      const sectionRef = doc(db, "section", section.id)
+      batch.update(sectionRef, { order: section.order })
+    })
+
+    // Cập nhật section được di chuyển
+    const movedSectionRef = doc(db, "section", updates.movedSectionId)
+    batch.update(movedSectionRef, {
+      boardId: updates.targetBoardId,
+      order: updates.targetBoardSections.find((s) => s.id === updates.movedSectionId)?.order || 0,
+      updatedAt: serverTimestamp(),
+    })
+
+    await batch.commit()
+
+    return {
+      success: true,
+      message: "Cập nhật vị trí học phần thành công",
+    }
+  } catch (error) {
+    const firestoreError = error as FirestoreError
+    return {
+      success: false,
+      message: "Không thể cập nhật vị trí học phần",
+      error: firestoreError,
+    }
+  }
+}
+
+// Lấy sections theo thứ tự
+export const getSortedSections = async (boardId: string) => {
+  try {
+    const sectionsRef = collection(db, "section")
+    const q = query(
+      sectionsRef,
+      where("boardId", "==", boardId),
+      orderBy("order", "asc"),
+      orderBy("createdAt", "desc")
+    )
+
+    const querySnapshot = await getDocs(q)
+
+    const sections: ResponseSection[] = querySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      title: doc.data().title,
+      length: doc.data().listInput?.length || 0,
+      order: doc.data().order || 0,
+    }))
+
+    return {
+      success: true,
+      sections,
+      message: "Lấy danh sách học phần thành công",
+    }
+  } catch (error) {
+    const firestoreError = error as FirestoreError
+    return {
+      success: false,
+      message: "Không thể lấy danh sách học phần",
       error: firestoreError,
     }
   }

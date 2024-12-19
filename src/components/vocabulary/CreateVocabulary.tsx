@@ -72,9 +72,7 @@ const CreateVocabulary = ({ user }: CreateVocabularyProps) => {
       listInput,
     }
 
-    console.log(data)
     const res = await createSection(data)
-    console.log(res)
     if (res?.success) {
       toast.success(res.message)
       router.push("/vocabulary")

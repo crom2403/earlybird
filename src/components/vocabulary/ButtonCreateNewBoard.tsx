@@ -37,7 +37,6 @@ const ButtonCreateNewBoard = ({
         name: nameGroup,
         color: selectColor,
       })
-      console.log(res)
       setIsCreating(false)
 
       if (res.success) {
@@ -45,7 +44,6 @@ const ButtonCreateNewBoard = ({
 
         // Fetch lại danh sách boards và cập nhật state
         const updatedBoards = await getAllBoardByUser(userId)
-        console.log(updatedBoards)
         if (updatedBoards.success) {
           setBoards(updatedBoards.boards)
         }

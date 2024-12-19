@@ -35,6 +35,7 @@ export interface InputVocabulary {
 }
 
 export interface SectionType {
+  id: string
   boardId: string | string[]
   isPublic: boolean
   listInput: InputVocabulary[]

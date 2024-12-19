@@ -39,9 +39,9 @@ const SortableBoard = ({ board, children }: { board: BoardType; children: React.
     transition,
     cursor: "move",
     // Shadow khi kéo
-    boxShadow: isDragging
-      ? "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)"
-      : "none",
+    // boxShadow: isDragging
+    //   ? "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)"
+    //   : "none",
     zIndex: isDragging ? 10 : 1,
     opacity: isDragging ? 0.9 : 1,
   }
@@ -127,7 +127,7 @@ const MyVocabulary = ({ userId }: { userId: string | undefined }) => {
         <ButtonCreateNewBoard userId={userId} setBoards={setBoards} />
 
         <SortableContext items={boards.map((board) => board.id)} strategy={rectSortingStrategy}>
-          <div className="w-full grid grid-cols-4 gap-4 mt-4">
+          <div className="w-full grid grid-cols-1 md:grid-cols-4 gap-4 mt-4">
             {boards?.map((board) => (
               <SortableBoard key={board.id} board={board}>
                 <Board boardData={board} />

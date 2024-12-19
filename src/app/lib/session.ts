@@ -4,7 +4,6 @@ import { SignJWT, jwtVerify } from "jose"
 import { cookies } from "next/headers"
 
 const secretKey = process.env.NEXT_PUBLIC_SESSION_SECRET
-console.log("secretKey", secretKey)
 const encodedKey = new TextEncoder().encode(secretKey)
 
 export async function createSession(userId: string) {

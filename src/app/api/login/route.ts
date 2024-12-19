@@ -35,12 +35,10 @@ export async function POST(request: NextRequest) {
     // Tìm người dùng theo email
     const user = await findUserByEmail(data.email).then(async (userOld: any) => {
       if (userOld) {
-        console.log("userOld", userOld)
         await createSession(userOld[0]?.uid)
         return userOld[0]
       } else {
         await addUser(data).then(async (newUser) => {
-          console.log("newUser", newUser)
           await createSession(newUser.uid)
           return newUser
         })
