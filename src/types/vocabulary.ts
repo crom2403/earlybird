@@ -28,3 +28,22 @@ export interface BoardType {
   order?: number
   userId: string
 }
+export interface InputVocabulary {
+  id: number
+  define: string
+  terminology: string
+}
+
+export interface SectionType {
+  boardId: string | string[]
+  isPublic: boolean
+  listInput: InputVocabulary[]
+  title: string
+  user: {
+    uid: string
+    displayName: string
+    photoURL: string
+  }
+  order?: number
+  createdAt?: Date
+}

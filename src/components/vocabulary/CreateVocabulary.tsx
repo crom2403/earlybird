@@ -1,19 +1,31 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
-
 import { HeroHighlight } from "../ui/hero-highlight"
 import React, { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { DeleteIcon, Download, Plus } from "lucide-react"
 import { DoubleInputVocabulary } from "@/components/vocabulary/DoubleInputVocabulary"
-import { Switch } from "@radix-ui/react-switch"
 import { cn } from "@/lib/utils"
 import { Input } from "@/components/ui/input"
+import { toast } from "sonner"
+import { createSection, findBoardById } from "@/app/vocabulary/action"
+import { useRouter } from "next/navigation"
+import { useParams } from "next/navigation"
+interface CreateVocabularyProps {
+  user: {
+    uid: string
+    displayName: string
+    photoURL: string
+  }
+}
 
-const CreateVocabulary = () => {
+const CreateVocabulary = ({ user }: CreateVocabularyProps) => {
   const [listInput, setListInput] = useState([{ id: 1, terminology: "", define: "" }])
   const [isPublic, setIsPublic] = useState(false)
   const [title, setTitle] = useState("")
+  const router = useRouter()
+  const { boardId } = useParams()
 
   const handleAddListInput = () => {
     const newInput = { id: listInput.length + 1, terminology: "", define: "" }
@@ -30,9 +42,45 @@ const CreateVocabulary = () => {
     setListInput(listInput.filter((el) => el.id !== idInput))
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    console.log(listInput)
+    if (!title) {
+      toast.warning("Tiêu đề không được để trống!")
+      return
+    }
+    if (listInput.length === 0) {
+      toast.warning("Học phần phải có ít nhất 1 từ vựng!")
+      return
+    }
+
+    for (const el of listInput) {
+      if (el.terminology === "") {
+        toast.warning(`Ô thuật ngữ tại dòng số ${el.id} bị rỗng!`)
+        return
+      }
+      if (el.define === "") {
+        toast.warning(`Ô định nghĩa tại dòng số ${el.id} bị rỗng!`)
+        return
+      }
+    }
+
+    const data = {
+      boardId,
+      title,
+      isPublic,
+      user,
+      listInput,
+    }
+
+    console.log(data)
+    const res = await createSection(data)
+    console.log(res)
+    if (res?.success) {
+      toast.success(res.message)
+      router.push("/vocabulary")
+    } else {
+      toast.error(res?.message)
+    }
   }
 
   return (
