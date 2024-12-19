@@ -4,12 +4,12 @@
 import { HeroHighlight } from "../ui/hero-highlight"
 import React, { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { DeleteIcon, Download, Plus } from "lucide-react"
+import { DeleteIcon, Download, Plus, Scan } from "lucide-react"
 import { DoubleInputVocabulary } from "@/components/vocabulary/DoubleInputVocabulary"
 import { cn } from "@/lib/utils"
 import { Input } from "@/components/ui/input"
 import { toast } from "sonner"
-import { createSection, findBoardById } from "@/app/vocabulary/action"
+import { createSection } from "@/app/vocabulary/action"
 import { useRouter } from "next/navigation"
 import { useParams } from "next/navigation"
 interface CreateVocabularyProps {
@@ -30,6 +30,14 @@ const CreateVocabulary = ({ user }: CreateVocabularyProps) => {
   const handleAddListInput = () => {
     const newInput = { id: listInput.length + 1, terminology: "", define: "" }
     setListInput([...listInput, newInput])
+
+    // Thêm đoạn code để cuộn xuống cuối
+    setTimeout(() => {
+      const container = document.querySelector(".overflow-y-scroll")
+      if (container) {
+        container.scrollTop = container.scrollHeight
+      }
+    }, 0)
   }
 
   const handleInputChange = (id: number, field: string, value: string) => {
@@ -92,8 +100,8 @@ const CreateVocabulary = ({ user }: CreateVocabularyProps) => {
             <div className="absolute inset-x-60 top-0 bg-gradient-to-r from-transparent via-sky-500 to-transparent h-px w-1/4" />
           </div>
         </div>
-        <div className="p-4 flex flex-col max-w-[700px]">
-          <div className="flex items-center justify-between gap-2">
+        <div className="p-4 flex flex-col w-full md:max-w-[700px]">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
             <Button
               className="border-green-700 text-green-700 bg-green-50 hover:text-green-500 hover:bg-green-50 hover:border-green-500"
               variant="outline"
@@ -114,7 +122,7 @@ const CreateVocabulary = ({ user }: CreateVocabularyProps) => {
               <p>Chế độ public (Tất cả mọi người có thể xem)</p>
             </div>
           </div>
-          <div className="mt-8 relative inline-flex h-12 overflow-hidden rounded-md p-[6px] focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50">
+          <div className="mt-2 md:mt-8 relative inline-flex h-12 overflow-hidden rounded-md p-[6px] focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50">
             <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#E2CBFF_0%,#393BB2_50%,#E2CBFF_100%)]" />
             <Input
               value={title}
@@ -126,25 +134,28 @@ const CreateVocabulary = ({ user }: CreateVocabularyProps) => {
             />
           </div>
           <form onSubmit={handleSubmit} className="flex flex-col gap-4 mt-8">
-            {listInput.map((el, index) => (
-              <div key={el.id} className="flex gap-4 items-center">
-                <div className="size-6 flex items-center justify-center font-semibold text-xs bg-white text-black rounded-full">
-                  {index + 1}
+            <div className="flex flex-col gap-4 max-h-[300px] md:max-h-[360px] overflow-y-scroll">
+              {listInput.map((el, index) => (
+                <div key={el.id} className="flex gap-2 md:gap-4 items-center md:mr-2">
+                  <div className="relative size-7 flex items-center justify-center font-semibold text-xs bg-transparent text-black rounded-full">
+                    <Scan className="size-7 text-black dark:text-white"></Scan>
+                    <p className="absolute z-10 text-xs text-black dark:text-white">{index + 1}</p>
+                  </div>
+                  <DoubleInputVocabulary
+                    terminology={el.terminology}
+                    define={el.define}
+                    onChange={(field, value) => handleInputChange(el.id, field, value)}
+                  />
+                  <DeleteIcon
+                    onClick={() => handleDeleteInput(el.id)}
+                    className="cursor-pointer hover:text-blue-600"
+                  />
                 </div>
-                <DoubleInputVocabulary
-                  terminology={el.terminology}
-                  define={el.define}
-                  onChange={(field, value) => handleInputChange(el.id, field, value)}
-                />
-                <DeleteIcon
-                  onClick={() => handleDeleteInput(el.id)}
-                  className="cursor-pointer hover:text-blue-600"
-                />
-              </div>
-            ))}
+              ))}
+            </div>
             <button
               type="button"
-              className="bg-white min flex items-center justify-center mx-[38px] rounded-md py-1"
+              className="bg-white border min flex items-center justify-center rounded-md py-1"
               onClick={handleAddListInput}
             >
               <Plus className="text-black font-bold" />

@@ -1,30 +1,26 @@
-"use client";
-import { cn } from "@/lib/utils";
-import { useMotionValue, motion, useMotionTemplate } from "framer-motion";
-import React from "react";
+"use client"
+import { cn } from "@/lib/utils"
+import { useMotionValue, motion, useMotionTemplate } from "framer-motion"
+import React from "react"
 
 export const HeroHighlight = ({
   children,
   className,
   containerClassName,
 }: {
-  children: React.ReactNode;
-  className?: string;
-  containerClassName?: string;
+  children: React.ReactNode
+  className?: string
+  containerClassName?: string
 }) => {
-  let mouseX = useMotionValue(0);
-  let mouseY = useMotionValue(0);
+  const mouseX = useMotionValue(0)
+  const mouseY = useMotionValue(0)
 
-  function handleMouseMove({
-    currentTarget,
-    clientX,
-    clientY,
-  }: React.MouseEvent<HTMLDivElement>) {
-    if (!currentTarget) return;
-    let { left, top } = currentTarget.getBoundingClientRect();
+  function handleMouseMove({ currentTarget, clientX, clientY }: React.MouseEvent<HTMLDivElement>) {
+    if (!currentTarget) return
+    const { left, top } = currentTarget.getBoundingClientRect()
 
-    mouseX.set(clientX - left);
-    mouseY.set(clientY - top);
+    mouseX.set(clientX - left)
+    mouseY.set(clientY - top)
   }
   return (
     <div
@@ -57,15 +53,15 @@ export const HeroHighlight = ({
 
       <div className={cn("relative z-20", className)}>{children}</div>
     </div>
-  );
-};
+  )
+}
 
 export const Highlight = ({
   children,
   className,
 }: {
-  children: React.ReactNode;
-  className?: string;
+  children: React.ReactNode
+  className?: string
 }) => {
   return (
     <motion.span
@@ -92,5 +88,5 @@ export const Highlight = ({
     >
       {children}
     </motion.span>
-  );
-};
+  )
+}

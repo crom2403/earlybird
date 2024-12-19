@@ -37,12 +37,12 @@ export function DoubleInputVocabulary({
 
   return (
     <div className="relative flex w-full" ref={containerRef}>
-      <div className="flex size-full flex-col items-stretch justify-between gap-10">
-        <div className="flex flex-row justify-between">
+      <div className="flex size-full flex-col items-stretch justify-between gap-4 md:gap-10">
+        <div className="flex flex-row justify-between gap-4 md:gap-0">
           <Circle ref={div1Ref} className="w-fit rounded-md p-0">
             <Input
               placeholder="Thuật ngữ"
-              className="w-[250px] p-0 text-black border-none px-4 bg-white"
+              className="w-full md:w-[250px] p-0 dark:text-black px-2 md:px-4 bg-white"
               value={terminology}
               onChange={(e) => onChange("terminology", e.target.value)}
             />
@@ -50,7 +50,7 @@ export function DoubleInputVocabulary({
           <Circle ref={div2Ref} className="w-fit rounded-md p-0">
             <Input
               placeholder="Định nghĩa"
-              className="w-[250px] p-0 text-black border-none px-4 bg-white"
+              className="w-full md:w-[250px] p-0 text-black px-2 md:px-4 bg-white"
               value={define}
               onChange={(e) => onChange("define", e.target.value)}
             />
