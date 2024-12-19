@@ -4,6 +4,8 @@ import "./globals.css"
 import { Session } from "inspector/promises"
 import App from "@/app/App"
 import { Providers } from "./providers"
+import { Suspense } from "react"
+import Loading from "@/components/ui/Loading"
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -28,11 +30,13 @@ export default function RootLayout({
   session?: Session | null
 }>) {
   return (
-    <html lang="en">
+    <html lang="vi">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <Providers>
-          <App>{children}</App>
-        </Providers>
+        <Suspense fallback={<Loading />}>
+          <Providers>
+            <App>{children}</App>
+          </Providers>
+        </Suspense>
       </body>
     </html>
   )
