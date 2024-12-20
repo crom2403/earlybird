@@ -344,3 +344,51 @@ export const updateBoard = async (boardId: string, data: UpdateBoardData) => {
     }
   }
 }
+
+export const getSectionById = async (sectionId: string) => {
+  try {
+    const sectionRef = doc(db, "section", sectionId)
+    const sectionSnapshot = await getDoc(sectionRef)
+    if (sectionSnapshot.exists()) {
+      return {
+        success: true,
+        section: {
+          id: sectionSnapshot.id,
+          ...sectionSnapshot.data(),
+        },
+      }
+    } else {
+      return {
+        success: false,
+        message: "Không tìm thấy học phần",
+      }
+    }
+  } catch (error) {
+    return {
+      success: false,
+      message: "Lỗi khi lấy thông tin học phần",
+      error,
+    }
+  }
+}
+
+// Thêm hàm để cập nhật section
+export const updateSection = async (sectionId: string, data: any) => {
+  try {
+    const sectionRef = doc(db, "section", sectionId)
+    await updateDoc(sectionRef, {
+      ...data,
+      updatedAt: serverTimestamp(),
+    })
+    return {
+      success: true,
+      message: "Cập nhật học phần thành công",
+    }
+  } catch (error) {
+    return {
+      success: false,
+      message: "Lỗi khi cập nhật học phần",
+      error,
+    }
+  }
+}

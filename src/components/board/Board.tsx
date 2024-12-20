@@ -171,7 +171,7 @@ const Board = ({ boardData, setBoards }: { boardData: BoardType; setBoards: any 
                 <Ellipsis className="size-5" />
               </button>
             </PopoverTrigger>
-            <PopoverContent className="w-40 flex flex-col p-0 ">
+            <PopoverContent className="w-40 flex flex-col p-0 dark:border-slate-200">
               <ButtonEditBoard
                 boardId={boardData.id}
                 color={boardData.color}

@@ -90,6 +90,9 @@ const config: Config = {
         aurora: "aurora 60s linear infinite",
         spotlight: "spotlight 2s ease .75s 1 forwards",
         shimmer: "shimmer 2s linear infinite",
+        "spin-reverse": "spin 1s linear infinite reverse",
+        "spin-slow": "spin 3s linear infinite",
+        "spin-reverse-slow": "spin 3s linear infinite reverse",
       },
       keyframes: {
         shimmer: {
