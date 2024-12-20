@@ -588,7 +588,7 @@ const VocabularyEditor = ({ listVocabulary }: { listVocabulary: InputVocabulary[
                   outline: "none",
                   border: "none",
                 }}
-                className="text-xl focus:outline-none focus:border-none ring-0 focus:ring-0 "
+                className="text-xl focus:outline-none focus:border-none ring-0 focus:ring-0"
               />
             </div>
           </div>
