@@ -27,6 +27,7 @@ import { toast } from "sonner"
 import { db } from "@/lib/firebase"
 import { doc, writeBatch } from "firebase/firestore"
 import { BoardType } from "@/types/vocabulary"
+import Loading from "@/components/ui/Loading"
 
 // Component sortable board riêng
 const SortableBoard = ({ board, children }: { board: BoardType; children: React.ReactNode }) => {
@@ -116,7 +117,7 @@ const MyVocabulary = ({ userId }: { userId: string | undefined }) => {
     }
   }
 
-  if (loading) return <p>Đang tải...</p>
+  if (loading) return <Loading />
 
   return (
     <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
