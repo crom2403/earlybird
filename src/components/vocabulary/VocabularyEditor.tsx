@@ -146,6 +146,10 @@ const VocabularyEditor = ({ listVocabulary }: { listVocabulary: InputVocabulary[
   }
 
   const handleKeyDown = (event: React.KeyboardEvent) => {
+    if (showResults) {
+      event.preventDefault()
+      return
+    }
     if (event.key !== "Enter") return
     event.preventDefault()
 
