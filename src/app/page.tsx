@@ -9,7 +9,7 @@ export default function Home() {
       <LineColor />
       {/* <AuroraBackgroundDemo /> */}
       <SpotlightPreview />
-      <div className="absolute inset-0 h-[calc(100vh-64px)]"></div>
+      {/* <div className="absolute inset-0 h-[calc(100vh-64px)]"></div> */}
     </div>
   )
 }

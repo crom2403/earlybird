@@ -329,37 +329,6 @@ const VocabularyEditor = ({ listVocabulary }: { listVocabulary: InputVocabulary[
         </div>
 
         {showResults && (
-          // <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
-          //   <div
-          //     onClick={(e) => e.stopPropagation()}
-          //     className="bg-white relative max-w-[600px] flex h-[400px] w-full flex-col items-center justify-center overflow-hidden rounded-lg border md:shadow-xl"
-          //   >
-          //     <span className="pointer-events-none whitespace-pre-wrap bg-gradient-to-b from-black to-gray-300/80 bg-clip-text text-center text-3xl font-semibold leading-none text-transparent dark:from-white dark:to-slate-900/10">
-          //       Kết quả học tập
-          //     </span>
-          //     <div className="space-y-4">
-          //       <p>Tổng số từ: {listVocabulary.length}</p>
-          //       {mode === "test" && (
-          //         <>
-          //           <p>Số câu đúng: {stats.correctAnswers}</p>
-          //           <p>Số câu sai: {stats.wrongAnswers}</p>
-          //           <p>
-          //             Tỷ lệ đúng:{" "}
-          //             {((stats.correctAnswers / listVocabulary.length) * 100).toFixed(1)}%
-          //           </p>
-          //         </>
-          //       )}
-          //       <p>Thời gian hoàn thành: {formatTime(stats.totalTime)}</p>
-          //     </div>
-          //     <div className="flex gap-2 mt-4">
-          //       <Button onClick={resetLearning}>Học lại</Button>
-          //       <Link href="/vocabulary">
-          //         <Button variant="outline">Trở về</Button>
-          //       </Link>
-          //     </div>
-          //     <BorderBeam size={250} duration={12} delay={9} />
-          //   </div>
-          // </div>
           <PopupFinalLearn
             lengthListVocabulary={listVocabulary.length}
             correctAnswers={stats.correctAnswers}
