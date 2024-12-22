@@ -34,7 +34,7 @@ const getDaysInMonth = (year: number, month: number) => {
 }
 
 const CommitGrid: React.FC = () => {
-  const year = 2024
+  const year = new Date().getFullYear()
   // const allDates = generateDates(year)
 
   // Group dates by month
@@ -90,8 +90,8 @@ const CommitGrid: React.FC = () => {
   })
 
   return (
-    <div className="p-4 bg-transparent dark:text-white">
-      <div className="grid grid-cols-3 gap-4 md:flex md:gap-4">
+    <div className=" mt-4 bg-transparent dark:text-white w-fit">
+      <div className="grid grid-cols-3 gap-4 md:grid-cols-6">
         {monthsData.map(({ month, monthYear, weeks }) => (
           <div key={monthYear} className="md:w-fit flex flex-col items-center">
             <div className="text-sm font-medium mb-2">{month}</div>
@@ -113,8 +113,10 @@ const CommitGrid: React.FC = () => {
                         }
                       }}
                       className={clsx(
-                        "w-4 h-4 md:w-[10px] md:h-[10px] hover:bg-slate-500 dark:hover:bg-slate-200",
-                        date ? getHeatmapColor(dummyData[date]) : "bg-transparent"
+                        "size-4 md:size-[10px] hover:bg-slate-500 dark:hover:bg-slate-200",
+                        date
+                          ? getHeatmapColor(dummyData[date])
+                          : "bg-transparent hover:bg-transparent dark:hover:bg-transparent"
                       )}
                       title={date ? `${date}: ${dummyData[date] || 0} giờ` : ""}
                     />

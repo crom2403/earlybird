@@ -392,3 +392,67 @@ export const updateSection = async (sectionId: string, data: any) => {
     }
   }
 }
+
+// export const getWeeklyStudyTime = async (userId: string): Promise<number> => {
+//   try {
+//     const currentDate = new Date()
+//     const weekAgo = new Date(currentDate)
+//     weekAgo.setDate(currentDate.getDate() - 7)
+
+//     const startDate = `${weekAgo.getDate().toString().padStart(2, "0")}/${(weekAgo.getMonth() + 1).toString().padStart(2, "0")}/${weekAgo.getFullYear()}`
+//     const endDate = `${currentDate.getDate().toString().padStart(2, "0")}/${(currentDate.getMonth() + 1).toString().padStart(2, "0")}/${currentDate.getFullYear()}`
+
+//     const studyTimeRef = collection(db, "studyTime")
+//     const q = query(
+//       studyTimeRef,
+//       where("userId", "==", userId),
+//       where("dateId", ">=", startDate),
+//       where("dateId", "<=", endDate)
+//     )
+
+//     const querySnapshot = await getDocs(q)
+
+//     let totalTime = 0
+//     querySnapshot.forEach((doc) => {
+//       const data = doc.data()
+//       totalTime += data.totalTime || 0
+//     })
+
+//     return totalTime
+//   } catch (error) {
+//     console.error("Error fetching weekly study time:", error)
+//     return 0
+//   }
+// }
+
+// export const getMonthlyStudyTime = async (userId: string): Promise<number> => {
+//   try {
+//     const currentDate = new Date()
+//     const monthAgo = new Date(currentDate)
+//     monthAgo.setMonth(currentDate.getMonth() - 1)
+
+//     const startDate = `${monthAgo.getDate().toString().padStart(2, "0")}/${(monthAgo.getMonth() + 1).toString().padStart(2, "0")}/${monthAgo.getFullYear()}`
+//     const endDate = `${currentDate.getDate().toString().padStart(2, "0")}/${(currentDate.getMonth() + 1).toString().padStart(2, "0")}/${currentDate.getFullYear()}`
+
+//     const studyTimeRef = collection(db, "studyTime")
+//     const q = query(
+//       studyTimeRef,
+//       where("userId", "==", userId),
+//       where("dateId", ">=", startDate),
+//       where("dateId", "<=", endDate)
+//     )
+
+//     const querySnapshot = await getDocs(q)
+
+//     let totalTime = 0
+//     querySnapshot.forEach((doc) => {
+//       const data = doc.data()
+//       totalTime += data.totalTime || 0
+//     })
+
+//     return totalTime
+//   } catch (error) {
+//     console.error("Error fetching monthly study time:", error)
+//     return 0
+//   }
+// }

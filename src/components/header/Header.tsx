@@ -8,14 +8,17 @@ import { Input } from "@/components/ui/input"
 import IconLoginButton from "@/components/login/IconLoginGoogle"
 import AvatarDropdown from "@/components/header/AvatarDropdown"
 // import { getServerSideUser } from "@/app/lib/payload-utils"
+import Link from "next/link"
 
 const Header = async ({ me }: { me: any }) => {
   // const me = await getServerSideUser()
   return (
     <div className="w-full pl-2 pr-4 min-h-16 dark:bg-black/80 grid grid-cols-3 border-b dark:border-neutral-800 border-neutral-200">
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-2">
         <SidebarTrigger />
-        <Image src="/svg/logo.svg" alt="logo" width={200} height={200} className="size-10" />
+        <Link href="/">
+          <Image src="/svg/logo.svg" alt="logo" width={200} height={200} className="size-10" />
+        </Link>
       </div>
       <div className="flex items-center justify-center relative">
         <Input
