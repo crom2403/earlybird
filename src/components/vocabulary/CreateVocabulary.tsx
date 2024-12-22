@@ -294,11 +294,7 @@ const CreateVocabulary = ({ user }: CreateVocabularyProps) => {
     Papa.parse(file, {
       header: true,
       complete: (results) => {
-        console.log(results)
-        console.log(Object.keys(results?.data))
         const test: any = Object.keys(results?.data[0] || {})
-        console.log(test[0])
-        console.log(test[1])
         if (test[0] !== "terminology") {
           toast.error("Dòng số 0 cột A phải là terminology")
           setLoadingUpload(false)

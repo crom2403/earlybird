@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/select"
 import { cn, formatTime } from "@/lib/utils"
 import PopupFinalLearn from "@/components/vocabulary/PopupFinalLearn"
+import { useOnlineTracking } from "@/hooks/useOnlineTracking"
 interface VocabularyState {
   attempts: number
   isCorrect: boolean
@@ -24,7 +25,13 @@ interface Stats {
   totalTime: number
 }
 
-const VocabularyEditor = ({ listVocabulary }: { listVocabulary: InputVocabulary[] | [] }) => {
+const VocabularyEditor = ({
+  userId,
+  listVocabulary,
+}: {
+  userId: string | undefined
+  listVocabulary: InputVocabulary[] | []
+}) => {
   const [code, setCode] = useState("")
   const [theme, setTheme] = useState("dark")
   const [counter, setCounter] = useState<number>(0)
@@ -34,6 +41,8 @@ const VocabularyEditor = ({ listVocabulary }: { listVocabulary: InputVocabulary[
   const [showResults, setShowResults] = useState(false)
   const [startTime, setStartTime] = useState<number>(Date.now())
   const [elapsedTime, setElapsedTime] = useState<number>(0)
+  useOnlineTracking(userId)
+
   const [stats, setStats] = useState<Stats>({
     correctAnswers: 0,
     wrongAnswers: 0,

@@ -13,9 +13,10 @@ const IconLoginButton: React.FC = () => {
     try {
       const userData = await signInWithGoogle()
       login(userData)
-      const response = await loginAction(userData)
+      const response = await loginAction({ ...userData })
       if (response.success) {
         window.location.reload()
+        // window.location.href = "/dashboard"
         toast.success(response?.message)
       }
     } catch (error) {
