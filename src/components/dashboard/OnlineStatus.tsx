@@ -3,13 +3,13 @@ import { useOnlineTracking } from "@/hooks/useOnlineTracking"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
 export function OnlineStatus({ userId }: { userId: string | undefined }) {
-  const { isOnline, lastSeen, totalTimeToday } = useOnlineTracking(userId)
+  const { isOnline, lastSeen } = useOnlineTracking(userId)
 
-  const formatTime = (seconds: number) => {
-    const hours = Math.floor(seconds / 3600)
-    const minutes = Math.floor((seconds % 3600) / 60)
-    return `${hours}h ${minutes}m`
-  }
+  // const formatTime = (seconds: number) => {
+  //   const hours = Math.floor(seconds / 3600)
+  //   const minutes = Math.floor((seconds % 3600) / 60)
+  //   return `${hours}h ${minutes}m`
+  // }
 
   return (
     <Card className="w-full max-w-md">
@@ -33,7 +33,7 @@ export function OnlineStatus({ userId }: { userId: string | undefined }) {
           </div>
           <div className="flex items-center justify-between">
             <span>Thời gian hoạt động hôm nay:</span>
-            <span>{formatTime(totalTimeToday)}</span>
+            {/* <span>{formatTime(totalTimeToday)}</span> */}
           </div>
         </div>
       </CardContent>

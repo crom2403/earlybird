@@ -190,7 +190,7 @@ export const useOnlineTracking = (userId: string | undefined) => {
     // })
 
     // Thêm interval để định kỳ cập nhật thời gian
-    const intervalId = setInterval(updateTotalTime, 60000) // Cập nhật mỗi 5 phút
+    const intervalId = setInterval(updateTotalTime, 60000 * 5) // Cập nhật mỗi 5 phút
     return () => {
       const cleanup = async () => {
         await updateTotalTime()

@@ -17,21 +17,21 @@ import { convertTimestampToString } from "@/utils/converter"
 //   }
 // }
 
-export const getServerSideUser = async (): Promise<UserResponse | null> => {
+export const getServerSideUser = async (): Promise<UserResponse | undefined> => {
   try {
     const cookie = cookies().get("session")?.value
-    if (!cookie) return null
+    if (!cookie) return undefined
 
     const session = await decrypt(cookie) // Giải mã cookie
-    if (!session?.userId) return null
+    if (!session?.userId) return undefined
 
     const q = query(collection(db, "users"), where("uid", "==", session.userId))
     const querySnapshot = await getDocs(q)
 
-    if (querySnapshot.empty) return null
+    if (querySnapshot.empty) return undefined
 
     const userDoc = querySnapshot.docs[0]?.data()
-    if (!userDoc) return null
+    if (!userDoc) return undefined
 
     return {
       ...userDoc,
@@ -39,6 +39,6 @@ export const getServerSideUser = async (): Promise<UserResponse | null> => {
     } as UserResponse
   } catch (error) {
     console.error("Error in getServerSideUser:", error)
-    return null
+    return undefined
   }
 }
