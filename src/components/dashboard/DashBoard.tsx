@@ -2,7 +2,6 @@
 "use client"
 import { ShootingStars } from "@/components/ui/shooting-stars"
 import { StarsBackground } from "@/components/ui/stars-background"
-// import { OnlineStatus } from "@/components/dashboard/OnlineStatus"
 import dynamic from "next/dynamic"
 import Snowfall from "react-snowfall"
 import TimeLearning from "@/components/dashboard/TimeLearning"
@@ -21,9 +20,9 @@ interface DashBoardProps {
 
 const DashBoard = ({ userId, listStudyTime, todayTimeStudy, monthTimeStudy }: DashBoardProps) => {
   return (
-    <div className="relative overflow-x-hidden overflow-y-auto">
+    <div className="relative overflow-x-hidden pb-14 md:pb-0">
       <Snowfall snowflakeCount={20} />
-      <div className="absolute top-[-130px] right-[-130px] size-72 duration-400 ease-linear transition-all bg-gradient-to-r from-white to-white dark:from-yellow-200 dark:to-red-500 transform scale-[1.80] rounded-full blur-3xl " />
+      <div className="absolute top-[-220px] right-[-220px] md:top-[-130px] md:right-[-130px] size-72 duration-400 ease-linear transition-all bg-gradient-to-r from-white to-white dark:from-yellow-200 dark:to-red-500 transform scale-[1.80] rounded-full blur-3xl " />
       <div className="p-4 w-full flex flex-col md:flex-row gap-4">
         <div className="w-full md:w-[40%] flex flex-col gap-4">
           <div className="relative overflow-hidden w-full md:h-[260px] h-[200px] rounded-2xl">
@@ -42,7 +41,7 @@ const DashBoard = ({ userId, listStudyTime, todayTimeStudy, monthTimeStudy }: Da
             <TimeLearning data={{ todayTimeStudy, monthTimeStudy }} />
             <div className="w-full bg-transparent"></div>
           </div>
-          <div className="w-full">
+          <div className="w-full flex justify-center md:flex-none">
             <CommitGrid listStudyTime={listStudyTime || []} />
           </div>
         </div>

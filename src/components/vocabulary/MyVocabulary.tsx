@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import {
   DndContext,
   closestCenter,
@@ -28,7 +28,7 @@ import { toast } from "sonner"
 import { db } from "@/lib/firebase"
 import { doc, writeBatch } from "firebase/firestore"
 import { BoardType } from "@/types/vocabulary"
-import { ResponseSection } from "@/app/vocabulary/action"
+import { getAllBoardByUser, ResponseSection } from "@/app/vocabulary/action"
 
 // Component sortable board riêng
 export const SortableBoard = ({
@@ -60,14 +60,13 @@ export const SortableBoard = ({
 
 const MyVocabulary = ({
   userId,
-  listBoard,
   listSection,
 }: {
   userId: string | undefined
-  listBoard: BoardType[]
+  // listBoard: BoardType[]
   listSection: ResponseSection[] | []
 }) => {
-  const [boards, setBoards] = useState<BoardType[]>(listBoard || [])
+  const [boards, setBoards] = useState<BoardType[]>([])
 
   // Cấu hình sensors cho trải nghiệm kéo thả đa dạng
   const sensors = useSensors(
@@ -112,6 +111,18 @@ const MyVocabulary = ({
       }
     }
   }
+
+  const handleGetAllBoardByUser = async () => {
+    // Lấy danh sách Board
+    const boardRes = await getAllBoardByUser(userId)
+    const sortedBoards: BoardType[] = boardRes.success
+      ? (boardRes.boards as BoardType[]).sort((a, b) => (a.order || 0) - (b.order || 0))
+      : []
+    setBoards(sortedBoards)
+  }
+  useEffect(() => {
+    handleGetAllBoardByUser()
+  }, [])
 
   return (
     <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
