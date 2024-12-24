@@ -21,11 +21,10 @@ import {
 
 export const createBoard = async (data: any) => {
   try {
-    const res = await addDoc(collection(db, "board"), { ...data, createdAt: serverTimestamp() })
+    await addDoc(collection(db, "board"), { ...data, createdAt: serverTimestamp() })
     return {
       success: true,
       message: "Tạo nhóm thành công",
-      res,
     }
   } catch (error) {
     return {
@@ -158,6 +157,7 @@ export interface ResponseSection {
   title: string
   length: number
   order: number
+  boardId: string
 }
 export const getAllSectionOfBoard = async (boardId: string) => {
   try {
@@ -169,9 +169,10 @@ export const getAllSectionOfBoard = async (boardId: string) => {
     // Chuyển đổi các tài liệu thành mảng SectionType
     const sections: ResponseSection[] = querySnapshot.docs.map((doc) => ({
       id: doc.id,
-      title: doc.data().title,
+      title: doc.data().title || "",
       length: doc.data().listInput?.length || 0,
       order: doc.data().order || 0,
+      boardId,
     }))
 
     return {

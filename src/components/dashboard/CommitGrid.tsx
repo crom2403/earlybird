@@ -95,7 +95,6 @@ const CommitGrid = ({ listStudyTime }: { listStudyTime: StudyData[] }) => {
                     <div
                       key={dayIndex}
                       onClick={() => {
-                        console.log(date)
                         if (date) {
                           const formattedDate = new Date(date).toLocaleDateString("vi-VN", {
                             day: "2-digit",

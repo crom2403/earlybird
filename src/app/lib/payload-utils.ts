@@ -55,9 +55,7 @@ export async function getServerSideUser(): Promise<UserResponse | undefined> {
   try {
     // Lấy cookie một cách đồng bộ
     const cookies = (await getCookieData()) as [string, { value: string }][]
-    console.log("cookies", cookies)
     const sessionCookie: any = cookies.find((key: any) => key.name === "session")
-    console.log("sessionCookie", sessionCookie)
 
     if (!sessionCookie?.value) {
       return undefined

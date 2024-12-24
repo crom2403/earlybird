@@ -44,10 +44,20 @@ import {
 import { Button } from "@/components/ui/button"
 import { getAllBoardByUser } from "@/app/vocabulary/action"
 import ButtonEditBoard from "@/components/vocabulary/ButtonEditBoard"
+import Loading from "@/app/loading"
 
-const Board = ({ boardData, setBoards }: { boardData: BoardType; setBoards: any }) => {
-  const [listSection, setListSection] = useState<ResponseSection[]>([])
+const Board = ({
+  boardData,
+  setBoards,
+  listSectionData,
+}: {
+  boardData: BoardType
+  setBoards: any
+  listSectionData: any
+}) => {
+  const [listSection, setListSection] = useState<ResponseSection[]>(listSectionData || [])
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false)
+  const [loading, setLoading] = useState(false)
   const userId = boardData.userId
 
   // Thêm cấu hình sensors
@@ -63,14 +73,15 @@ const Board = ({ boardData, setBoards }: { boardData: BoardType; setBoards: any 
     })
   )
 
-  const handleGetListSection = async () => {
-    const res = await getAllSectionOfBoard(boardData.id)
-    if (res.success) {
-      setListSection(res.sections || [])
-    } else {
-      setListSection([])
-    }
-  }
+  // const handleGetListSection = async () => {
+  //   const res = await getAllSectionOfBoard(boardData.id)
+  //   if (res.success) {
+  //     setListSection(res.sections || [])
+  //   } else {
+  //     setListSection([])
+  //   }
+  //   setLoading(false)
+  // }
 
   const handleDeleteBoard = async (boardId: string) => {
     try {
@@ -92,9 +103,10 @@ const Board = ({ boardData, setBoards }: { boardData: BoardType; setBoards: any 
     }
   }
 
-  useEffect(() => {
-    handleGetListSection()
-  }, [])
+  // useEffect(() => {
+  //   handleGetListSection()
+  // }, [])
+  if (loading) return <Loading />
 
   const handleDragEnd = async (event: DragEndEvent) => {
     const { active, over } = event

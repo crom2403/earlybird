@@ -10,7 +10,6 @@ const NavbarMobile = dynamic(() => import("@/components/sidebar/NavbarMobile"), 
 
 const App = async ({ children }: { children: React.ReactNode }) => {
   const user = await getServerSideUser()
-  // console.log("user", user)
   return (
     <SidebarProvider>
       <div className="flex w-full h-full relative">

@@ -20,7 +20,6 @@ interface DashBoardProps {
 }
 
 const DashBoard = ({ userId, listStudyTime, todayTimeStudy, monthTimeStudy }: DashBoardProps) => {
-  console.log(listStudyTime)
   return (
     <div className="relative overflow-x-hidden overflow-y-auto">
       <Snowfall snowflakeCount={20} />

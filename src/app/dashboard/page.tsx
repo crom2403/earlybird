@@ -10,7 +10,6 @@ import {
 
 export default async function DashboardPage() {
   const user = await getServerSideUser()
-  console.log("user", user)
   const todayTimeStudy = await getTodayStudyTime(user?.uid || "")
   const monthTimeStudy = await getMonthlyStudyTime(user?.uid || "")
   const listStudyTime = await getAllStudyTimeByUser(user?.uid || "")

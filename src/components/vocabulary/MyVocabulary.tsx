@@ -1,5 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client"
-import React, { useEffect, useState } from "react"
+import { useState } from "react"
 import {
   DndContext,
   closestCenter,
@@ -20,17 +22,22 @@ import { CSS } from "@dnd-kit/utilities"
 
 import Board from "@/components/board/Board"
 import ButtonCreateNewBoard from "@/components/vocabulary/ButtonCreateNewBoard"
-import { getAllBoardByUser } from "@/app/vocabulary/action"
 import { toast } from "sonner"
 
 // Firebase
 import { db } from "@/lib/firebase"
 import { doc, writeBatch } from "firebase/firestore"
 import { BoardType } from "@/types/vocabulary"
-import Loading from "@/components/ui/Loading"
+import { ResponseSection } from "@/app/vocabulary/action"
 
 // Component sortable board riêng
-const SortableBoard = ({ board, children }: { board: BoardType; children: React.ReactNode }) => {
+export const SortableBoard = ({
+  board,
+  children,
+}: {
+  board: BoardType
+  children: React.ReactNode
+}) => {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: board.id,
     disabled: false,
@@ -51,9 +58,16 @@ const SortableBoard = ({ board, children }: { board: BoardType; children: React.
   )
 }
 
-const MyVocabulary = ({ userId }: { userId: string | undefined }) => {
-  const [boards, setBoards] = useState<BoardType[]>([])
-  const [loading, setLoading] = useState(true)
+const MyVocabulary = ({
+  userId,
+  listBoard,
+  listSection,
+}: {
+  userId: string | undefined
+  listBoard: BoardType[]
+  listSection: ResponseSection[] | []
+}) => {
+  const [boards, setBoards] = useState<BoardType[]>(listBoard || [])
 
   // Cấu hình sensors cho trải nghiệm kéo thả đa dạng
   const sensors = useSensors(
@@ -62,24 +76,6 @@ const MyVocabulary = ({ userId }: { userId: string | undefined }) => {
       coordinateGetter: sortableKeyboardCoordinates,
     })
   )
-
-  useEffect(() => {
-    const fetchBoards = async () => {
-      setLoading(true)
-      const res = await getAllBoardByUser(userId)
-
-      if (res.success && res.boards) {
-        // Ép kiểu và thêm các trường còn thiếu nếu cần
-        const sortedBoards = (res.boards as BoardType[]).sort(
-          (a, b) => (a.order || 0) - (b.order || 0)
-        )
-        setBoards(sortedBoards)
-      }
-      setLoading(false)
-    }
-    fetchBoards()
-  }, [userId])
-
   // Xử lý kết thúc kéo thả
   const handleDragEnd = async (event: DragEndEvent) => {
     const { active, over } = event
@@ -117,18 +113,21 @@ const MyVocabulary = ({ userId }: { userId: string | undefined }) => {
     }
   }
 
-  if (loading) return <Loading />
-
   return (
     <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
       <div>
         <ButtonCreateNewBoard userId={userId} setBoards={setBoards} />
-
         <SortableContext items={boards.map((board) => board.id)} strategy={rectSortingStrategy}>
           <div className="w-full grid grid-cols-1 md:grid-cols-4 gap-4 mt-4">
             {boards?.map((board) => (
               <SortableBoard key={board.id} board={board}>
-                <Board boardData={board} setBoards={setBoards} />
+                <Board
+                  boardData={board}
+                  setBoards={setBoards}
+                  listSectionData={listSection?.filter(
+                    (el: ResponseSection) => el.boardId === board.id
+                  )}
+                />
               </SortableBoard>
             ))}
           </div>
