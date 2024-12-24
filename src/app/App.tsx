@@ -7,7 +7,7 @@ import { getServerSideUser } from "@/app/lib/payload-utils"
 
 const App = async ({ children }: { children: React.ReactNode }) => {
   const user = await getServerSideUser()
-  console.log("user", user)
+  // console.log("user", user)
   return (
     <SidebarProvider>
       <div className="flex w-full h-screen">

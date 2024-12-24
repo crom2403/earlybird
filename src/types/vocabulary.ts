@@ -46,5 +46,5 @@ export interface SectionType {
     photoURL: string
   }
   order?: number
-  createdAt?: Date
+  createdAt?: string
 }

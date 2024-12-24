@@ -1,7 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // Action Board
+"use server"
 import { db } from "@/lib/firebase"
 import { BoardType, SectionType } from "@/types/vocabulary"
+import { convertTimestampToString } from "@/utils/converter"
 import {
   addDoc,
   collection,
@@ -76,10 +78,9 @@ export const getAllBoardByUser = async (userId: string | undefined) => {
       id: doc.id,
       name: doc.data().name || "",
       color: doc.data().color || "",
-      createdAt: doc.data().createdAt,
+      createdAt: convertTimestampToString(doc.data().createdAt || ""),
       userId: doc.data().userId,
       order: doc.data().order || 0,
-      ...doc.data(),
     }))
 
     return {
@@ -282,12 +283,6 @@ interface ActionResponse {
   error?: FirestoreError
 }
 
-// Interface cho section cần xóa
-// interface SectionToDelete {
-//   id: string
-//   boardId: string
-// }
-
 // Hàm xóa board và tất cả section liên quan
 export const deleteBoardAndSections = async (boardId: string): Promise<ActionResponse> => {
   try {
@@ -393,66 +388,109 @@ export const updateSection = async (sectionId: string, data: any) => {
   }
 }
 
-// export const getWeeklyStudyTime = async (userId: string): Promise<number> => {
-//   try {
-//     const currentDate = new Date()
-//     const weekAgo = new Date(currentDate)
-//     weekAgo.setDate(currentDate.getDate() - 7)
+export const getAllStudyTimeByUser = async (
+  userId: string
+): Promise<{ date: string; totalTime: number }[]> => {
+  try {
+    // Lấy reference đến collection "studyTime"
+    const studyTimeRef = collection(db, "studyTime")
 
-//     const startDate = `${weekAgo.getDate().toString().padStart(2, "0")}/${(weekAgo.getMonth() + 1).toString().padStart(2, "0")}/${weekAgo.getFullYear()}`
-//     const endDate = `${currentDate.getDate().toString().padStart(2, "0")}/${(currentDate.getMonth() + 1).toString().padStart(2, "0")}/${currentDate.getFullYear()}`
+    // Tạo truy vấn để tìm các tài liệu có userId tương ứng
+    const q = query(
+      studyTimeRef,
+      where("userId", "==", userId),
+      where("year", "==", new Date().getFullYear())
+    )
 
-//     const studyTimeRef = collection(db, "studyTime")
-//     const q = query(
-//       studyTimeRef,
-//       where("userId", "==", userId),
-//       where("dateId", ">=", startDate),
-//       where("dateId", "<=", endDate)
-//     )
+    // Thực hiện truy vấn và lấy kết quả
+    const querySnapshot = await getDocs(q)
 
-//     const querySnapshot = await getDocs(q)
+    // Khởi tạo mảng để lưu trữ các bản ghi học tập
 
-//     let totalTime = 0
-//     querySnapshot.forEach((doc) => {
-//       const data = doc.data()
-//       totalTime += data.totalTime || 0
-//     })
+    // Duyệt qua các tài liệu và lưu thông tin vào mảng
+    const dataResponse: { date: string; totalTime: number }[] = querySnapshot.docs.map((doc) => {
+      return {
+        date: convertTimestampToString(doc.data().date) || "",
+        totalTime: doc.data().totalTime || 0,
+      }
+    })
 
-//     return totalTime
-//   } catch (error) {
-//     console.error("Error fetching weekly study time:", error)
-//     return 0
-//   }
-// }
+    // Trả về mảng các bản ghi học tập
+    return dataResponse
+  } catch (error) {
+    console.error("Error fetching study time:", error) // In ra lỗi nếu có
+    return [] // Trả về mảng rỗng nếu có lỗi
+  }
+}
 
-// export const getMonthlyStudyTime = async (userId: string): Promise<number> => {
-//   try {
-//     const currentDate = new Date()
-//     const monthAgo = new Date(currentDate)
-//     monthAgo.setMonth(currentDate.getMonth() - 1)
+export const getTodayStudyTime = async (userId: string): Promise<number> => {
+  try {
+    // Lấy reference đến collection "studyTime"
+    const studyTimeRef = collection(db, "studyTime")
 
-//     const startDate = `${monthAgo.getDate().toString().padStart(2, "0")}/${(monthAgo.getMonth() + 1).toString().padStart(2, "0")}/${monthAgo.getFullYear()}`
-//     const endDate = `${currentDate.getDate().toString().padStart(2, "0")}/${(currentDate.getMonth() + 1).toString().padStart(2, "0")}/${currentDate.getFullYear()}`
+    // Tạo truy vấn để tìm các tài liệu có userId tương ứng
+    const q = query(
+      studyTimeRef,
+      where("userId", "==", userId),
+      where("year", "==", new Date().getFullYear())
+    )
 
-//     const studyTimeRef = collection(db, "studyTime")
-//     const q = query(
-//       studyTimeRef,
-//       where("userId", "==", userId),
-//       where("dateId", ">=", startDate),
-//       where("dateId", "<=", endDate)
-//     )
+    // Sau đó, bạn có thể thêm điều kiện `where` thứ ba bằng cách sử dụng `query` một lần nữa
+    const finalQuery = query(
+      q,
+      where("month", "==", new Date().getMonth() + 1),
+      where("day", "==", new Date().getDay())
+    )
 
-//     const querySnapshot = await getDocs(q)
+    // Thực hiện truy vấn và lấy kết quả
+    const querySnapshot = await getDocs(finalQuery)
 
-//     let totalTime = 0
-//     querySnapshot.forEach((doc) => {
-//       const data = doc.data()
-//       totalTime += data.totalTime || 0
-//     })
+    // Khởi tạo mảng để lưu trữ các bản ghi học tập
 
-//     return totalTime
-//   } catch (error) {
-//     console.error("Error fetching monthly study time:", error)
-//     return 0
-//   }
-// }
+    // Duyệt qua các tài liệu và lưu thông tin vào mảng
+    let totalTime = 0
+    querySnapshot.docs.forEach((doc) => {
+      totalTime = totalTime + doc.data().totalTime || 0
+    })
+
+    // Trả về mảng các bản ghi học tập
+    return totalTime
+  } catch (error) {
+    console.error("Error fetching study time:", error) // In ra lỗi nếu có
+    return 0 // Trả về mảng rỗng nếu có lỗi
+  }
+}
+
+export const getMonthlyStudyTime = async (userId: string): Promise<number> => {
+  try {
+    // Lấy reference đến collection "studyTime"
+    const studyTimeRef = collection(db, "studyTime")
+
+    // Tạo truy vấn để tìm các tài liệu có userId tương ứng
+    const q = query(
+      studyTimeRef,
+      where("userId", "==", userId),
+      where("year", "==", new Date().getFullYear())
+    )
+
+    // Sau đó, bạn có thể thêm điều kiện `where` thứ ba bằng cách sử dụng `query` một lần nữa
+    const finalQuery = query(q, where("month", "==", new Date().getMonth() + 1))
+
+    // Thực hiện truy vấn và lấy kết quả
+    const querySnapshot = await getDocs(finalQuery)
+
+    // Khởi tạo mảng để lưu trữ các bản ghi học tập
+
+    // Duyệt qua các tài liệu và lưu thông tin vào mảng
+    let totalTime = 0
+    querySnapshot.docs.forEach((doc) => {
+      totalTime = totalTime + doc.data().totalTime || 0
+    })
+
+    // Trả về mảng các bản ghi học tập
+    return totalTime
+  } catch (error) {
+    console.error("Error fetching study time:", error) // In ra lỗi nếu có
+    return 0 // Trả về mảng rỗng nếu có lỗi
+  }
+}

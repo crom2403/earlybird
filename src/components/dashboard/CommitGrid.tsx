@@ -2,30 +2,23 @@
 import React from "react"
 import clsx from "clsx"
 import { toast } from "sonner"
+import { StudyData } from "@/types"
+import { convertSecondsToHoursMinutes } from "@/utils/converter"
 
-const dummyData: Record<string, number> = {
-  "2024-08-01": 1,
-  "2024-09-15": 2,
-  "2024-10-10": 3,
-  "2024-12-20": 5,
+const convertArrayToRecord = (data: StudyData[]): Record<string, number> => {
+  return data.reduce((acc, item) => {
+    // Chuyển đổi định dạng ngày
+    const dateKey = item.date.split("T")[0] // Lấy phần ngày từ chuỗi ISO
+    acc[dateKey] = item.totalTime // Gán totalTime vào key là dateKey
+    return acc // Trả về accumulator
+  }, {} as Record<string, number>) // Khởi tạo accumulator là một đối tượng rỗng
 }
 
-// const generateDates = (year: number) => {
-//   const dates = []
-//   const startDate = new Date(year, 0, 1) // January 1st
-//   const endDate = new Date(year, 11, 31) // December 31st
-
-//   for (let d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)) {
-//     dates.push(new Date(d).toISOString().split("T")[0])
-//   }
-//   return dates
-// }
-
 const getHeatmapColor = (count: number | undefined) => {
-  if (!count) return "bg-gray-300 dark:bg-gray-700" // No commits
-  if (count <= 1) return "bg-blue-100" // Tối nhất
-  if (count <= 2) return "bg-blue-300" // Tối
-  if (count <= 3) return "bg-blue-500" // Trung bình
+  if (!count || count == 0) return "bg-gray-300 dark:bg-gray-700" // No commits
+  if (count <= 1800) return "bg-blue-100" // Tối nhất
+  if (count <= 3600) return "bg-blue-300" // Tối
+  if (count <= 7200) return "bg-blue-500" // Trung bình
   return "bg-blue-700" // Sáng nhất
 }
 
@@ -33,10 +26,10 @@ const getDaysInMonth = (year: number, month: number) => {
   return new Date(year, month + 1, 0).getDate()
 }
 
-const CommitGrid: React.FC = () => {
+const CommitGrid = ({ listStudyTime }: { listStudyTime: StudyData[] }) => {
   const year = new Date().getFullYear()
   // const allDates = generateDates(year)
-
+  const dummyData = convertArrayToRecord(listStudyTime)
   // Group dates by month
   const monthlyData = Array.from({ length: 12 }, (_, monthIndex) => {
     const month = monthIndex + 1
@@ -102,14 +95,19 @@ const CommitGrid: React.FC = () => {
                     <div
                       key={dayIndex}
                       onClick={() => {
+                        console.log(date)
                         if (date) {
                           const formattedDate = new Date(date).toLocaleDateString("vi-VN", {
                             day: "2-digit",
                             month: "2-digit",
                             year: "numeric",
                           })
-                          const hours = dummyData[date] || 0
-                          toast.info(`Ngày ${formattedDate}: Bạn đã học ${hours} giờ.`)
+                          const time = dummyData[date] || 0
+                          toast.info(
+                            `Ngày ${formattedDate}: Bạn đã học ${convertSecondsToHoursMinutes(
+                              time
+                            )}`
+                          )
                         }
                       }}
                       className={clsx(

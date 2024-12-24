@@ -3,15 +3,32 @@
 import { ShootingStars } from "@/components/ui/shooting-stars"
 import { StarsBackground } from "@/components/ui/stars-background"
 // import { OnlineStatus } from "@/components/dashboard/OnlineStatus"
-import React from "react"
+import React, { useEffect } from "react"
 import dynamic from "next/dynamic"
 import Snowfall from "react-snowfall"
 import TimeLearning from "@/components/dashboard/TimeLearning"
-import Image from "next/image"
 
 const CommitGrid = dynamic(() => import("./CommitGrid"), { ssr: false })
 
-const DashBoard = ({ userId }: { userId: string | undefined }) => {
+interface DashBoardProps {
+  userId: string | undefined
+  listStudyTime: {
+    date: string
+    totalTime: number
+  }[]
+}
+
+const DashBoard = ({ userId, listStudyTime }: DashBoardProps) => {
+  // const handleGetData = async () => {
+  //   console.log("userId", userId)
+  //   const res = await getAllStudyTimeByUser(userId || "")
+  //   console.log(res)
+  // }
+  // useEffect(() => {
+  //   handleGetData()
+  // }, [])
+
+  console.log(listStudyTime)
   return (
     <div className="relative overflow-x-hidden overflow-y-auto">
       <div className="absolute top-[-130px] right-[-130px] size-72 duration-400 ease-linear transition-all bg-gradient-to-r from-blue-400 to-pink-600 dark:from-yellow-200 dark:to-red-500 transform scale-[1.80] rounded-full blur-3xl " />
@@ -37,7 +54,7 @@ const DashBoard = ({ userId }: { userId: string | undefined }) => {
         {/* <OnlineStatus userId={userId} /> */}
         <ShootingStars className="absolute inset-0 z-[-1]" />
         <StarsBackground className="absolute inset-0 z-[-2]" />
-        <CommitGrid />
+        <CommitGrid listStudyTime={listStudyTime || []} />
       </div>
     </div>
   )

@@ -37,13 +37,6 @@ export const useOnlineTracking = (userId: string | undefined) => {
     let startTime: number | null = null
     let studyTimeDocRef: any = null
 
-    // Tạo dateId theo format dd/mm/yyyy
-    const getDateId = (date: Date = new Date()) => {
-      return `${date.getDate().toString().padStart(2, "0")}/${(date.getMonth() + 1)
-        .toString()
-        .padStart(2, "0")}/${date.getFullYear()}`
-    }
-
     // Tìm document reference của user
     const getUserRef = async () => {
       const usersRef = collection(db, "users")
@@ -60,9 +53,11 @@ export const useOnlineTracking = (userId: string | undefined) => {
     // Tìm hoặc tạo record study time cho ngày hiện tại
     const getOrCreateStudyTimeRecord = async () => {
       try {
-        const dateId = getDateId()
-        const studyTimeDocId = `${userId}_${dateId}`
-        studyTimeDocRef = doc(db, "studyTime", studyTimeDocId)
+        const day = new Date().getDay()
+        const month = new Date().getMonth() + 1
+        const year = new Date().getFullYear()
+        const dateId = userId + day + month + year
+        studyTimeDocRef = doc(db, "studyTime", dateId)
 
         // Kiểm tra xem document đã tồn tại chưa
         const docSnap = await getDoc(studyTimeDocRef)
@@ -71,7 +66,9 @@ export const useOnlineTracking = (userId: string | undefined) => {
           // Tạo record mới cho ngày hôm nay
           const newRecord = {
             userId,
-            dateId,
+            day,
+            month,
+            year,
             date: Timestamp.fromDate(new Date()),
             totalTime: 0,
             lastUpdated: serverTimestamp(),

@@ -4,3 +4,8 @@ export interface SessionType {
   email?: string | null
   image?: string | null
 }
+
+export interface StudyData {
+  date: string
+  totalTime: number
+}
