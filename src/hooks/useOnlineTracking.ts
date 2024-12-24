@@ -53,7 +53,7 @@ export const useOnlineTracking = (userId: string | undefined) => {
     // Tìm hoặc tạo record study time cho ngày hiện tại
     const getOrCreateStudyTimeRecord = async () => {
       try {
-        const day = new Date().getDay()
+        const day = +String(new Date().getDate()).padStart(2, "0")
         const month = new Date().getMonth() + 1
         const year = new Date().getFullYear()
         const dateId = userId + day + month + year

@@ -1,8 +1,16 @@
 // import { Meteors } from "@/components/ui/meteors"
+import { convertSecondsToHoursMinutes } from "@/utils/converter"
 import Image from "next/image"
 import React from "react"
 
-const TimeLearning = () => {
+interface TimeLearningProps {
+  data: {
+    todayTimeStudy: number
+    monthTimeStudy: number
+  }
+}
+
+const TimeLearning = ({ data }: TimeLearningProps) => {
   return (
     <div className="w-full h-full relative">
       <Image
@@ -19,11 +27,15 @@ const TimeLearning = () => {
           <div className="flex gap-4 text-lg">
             <div>
               <p>Today</p>
-              <p className="text-sm font-semibold mt-1 text-yellow-400">1 giờ 23p</p>
+              <p className="text-sm font-semibold mt-1 text-yellow-400">
+                {convertSecondsToHoursMinutes(data.todayTimeStudy)}
+              </p>
             </div>
             <div>
               <p>This Month</p>
-              <p className="text-sm font-semibold mt-1 text-yellow-400">17 hours 37p</p>
+              <p className="text-sm font-semibold mt-1 text-yellow-400">
+                {convertSecondsToHoursMinutes(data.monthTimeStudy)}
+              </p>
             </div>
           </div>
         </div>

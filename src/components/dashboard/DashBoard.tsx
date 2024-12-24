@@ -3,7 +3,6 @@
 import { ShootingStars } from "@/components/ui/shooting-stars"
 import { StarsBackground } from "@/components/ui/stars-background"
 // import { OnlineStatus } from "@/components/dashboard/OnlineStatus"
-import React, { useEffect } from "react"
 import dynamic from "next/dynamic"
 import Snowfall from "react-snowfall"
 import TimeLearning from "@/components/dashboard/TimeLearning"
@@ -16,18 +15,11 @@ interface DashBoardProps {
     date: string
     totalTime: number
   }[]
+  todayTimeStudy: number
+  monthTimeStudy: number
 }
 
-const DashBoard = ({ userId, listStudyTime }: DashBoardProps) => {
-  // const handleGetData = async () => {
-  //   console.log("userId", userId)
-  //   const res = await getAllStudyTimeByUser(userId || "")
-  //   console.log(res)
-  // }
-  // useEffect(() => {
-  //   handleGetData()
-  // }, [])
-
+const DashBoard = ({ userId, listStudyTime, todayTimeStudy, monthTimeStudy }: DashBoardProps) => {
   console.log(listStudyTime)
   return (
     <div className="relative overflow-x-hidden overflow-y-auto">
@@ -47,7 +39,7 @@ const DashBoard = ({ userId, listStudyTime }: DashBoardProps) => {
             </video>
           </div>
           <div className="min-w-[340px]">
-            <TimeLearning />
+            <TimeLearning data={{ todayTimeStudy, monthTimeStudy }} />
           </div>
           <div className="w-full shadow-xl bg-transparent border border-gray-800 rounded-2xl"></div>
         </div>

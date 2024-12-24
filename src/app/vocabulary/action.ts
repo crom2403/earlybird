@@ -439,7 +439,7 @@ export const getTodayStudyTime = async (userId: string): Promise<number> => {
     const finalQuery = query(
       q,
       where("month", "==", new Date().getMonth() + 1),
-      where("day", "==", new Date().getDay())
+      where("day", "==", +String(new Date().getDate()).padStart(2, "0"))
     )
 
     // Thực hiện truy vấn và lấy kết quả
@@ -448,13 +448,13 @@ export const getTodayStudyTime = async (userId: string): Promise<number> => {
     // Khởi tạo mảng để lưu trữ các bản ghi học tập
 
     // Duyệt qua các tài liệu và lưu thông tin vào mảng
-    let totalTime = 0
+    let totalTimeToday = 0
     querySnapshot.docs.forEach((doc) => {
-      totalTime = totalTime + doc.data().totalTime || 0
+      totalTimeToday = totalTimeToday + doc.data().totalTime || 0
     })
 
     // Trả về mảng các bản ghi học tập
-    return totalTime
+    return totalTimeToday
   } catch (error) {
     console.error("Error fetching study time:", error) // In ra lỗi nếu có
     return 0 // Trả về mảng rỗng nếu có lỗi
@@ -473,7 +473,6 @@ export const getMonthlyStudyTime = async (userId: string): Promise<number> => {
       where("year", "==", new Date().getFullYear())
     )
 
-    // Sau đó, bạn có thể thêm điều kiện `where` thứ ba bằng cách sử dụng `query` một lần nữa
     const finalQuery = query(q, where("month", "==", new Date().getMonth() + 1))
 
     // Thực hiện truy vấn và lấy kết quả
@@ -482,13 +481,13 @@ export const getMonthlyStudyTime = async (userId: string): Promise<number> => {
     // Khởi tạo mảng để lưu trữ các bản ghi học tập
 
     // Duyệt qua các tài liệu và lưu thông tin vào mảng
-    let totalTime = 0
+    let totalTimeWeek = 0
     querySnapshot.docs.forEach((doc) => {
-      totalTime = totalTime + doc.data().totalTime || 0
+      totalTimeWeek = totalTimeWeek + doc.data().totalTime || 0
     })
 
     // Trả về mảng các bản ghi học tập
-    return totalTime
+    return totalTimeWeek
   } catch (error) {
     console.error("Error fetching study time:", error) // In ra lỗi nếu có
     return 0 // Trả về mảng rỗng nếu có lỗi
