@@ -32,6 +32,7 @@ const DashBoard = ({ userId, listStudyTime, todayTimeStudy, monthTimeStudy }: Da
               autoPlay
               loop
               muted
+              playsInline
               preload="auto"
             >
               <source src="/assets/lofi_christmas.mp4" type="video/mp4" />
