@@ -1,3 +1,4 @@
+"use server"
 import React from "react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import MyVocabulary from "@/components/vocabulary/MyVocabulary"
@@ -7,6 +8,8 @@ import { User } from "@/types/user"
 
 const page = async () => {
   const user: User | undefined = await getServerSideUser()
+  const plainUser = user ? JSON.parse(JSON.stringify(user)) : undefined
+
   return (
     <div className="container mx-auto p-4 ">
       <Tabs defaultValue="my_vocabulary">
@@ -21,7 +24,7 @@ const page = async () => {
 
         <TabsContent value="my_vocabulary">
           {user ? (
-            <MyVocabulary userId={user?.uid} />
+            <MyVocabulary userId={plainUser?.uid || ""} />
           ) : (
             <p>Bạn chưa đăng nhập hoặc không có nhóm nào!</p>
           )}

@@ -12,7 +12,7 @@ interface TimeLearningProps {
 
 const TimeLearning = ({ data }: TimeLearningProps) => {
   return (
-    <div className="w-full h-full relative">
+    <div className="w-full relative h-[240px]">
       <Image
         src="/svg/caythong.svg"
         width={140}
@@ -20,7 +20,7 @@ const TimeLearning = ({ data }: TimeLearningProps) => {
         alt="cay thong"
         className="absolute right-0 bottom-0"
       />
-      <div className="absolute inset-0 shadow-xl bg-transparent border border-gray-800 h-full overflow-hidden rounded-2xl">
+      <div className="absolute inset-0 shadow-xl bg-transparent dark:border border-gray-800 h-full overflow-hidden rounded-2xl">
         {/* <Meteors number={20} /> */}
         <div className="flex flex-col gap-4 p-4">
           <p className="text-2xl dark:text-white mt-2 font-semibold">My process</p>

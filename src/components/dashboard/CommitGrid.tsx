@@ -103,11 +103,15 @@ const CommitGrid = ({ listStudyTime }: { listStudyTime: StudyData[] }) => {
                             year: "numeric",
                           })
                           const time = dummyData[date] || 0
-                          toast.info(
-                            `Ngày ${formattedDate}: Bạn đã học ${convertSecondsToHoursMinutes(
-                              time
-                            )}`
-                          )
+                          if (time < 60) {
+                            toast.info("Chưa có dữ liệu")
+                          } else {
+                            toast.info(
+                              `Ngày ${formattedDate}: Bạn đã học ${convertSecondsToHoursMinutes(
+                                time
+                              )}`
+                            )
+                          }
                         }
                       }}
                       className={clsx(

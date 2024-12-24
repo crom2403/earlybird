@@ -23,11 +23,11 @@ const DashBoard = ({ userId, listStudyTime, todayTimeStudy, monthTimeStudy }: Da
   console.log(listStudyTime)
   return (
     <div className="relative overflow-x-hidden overflow-y-auto">
-      <div className="absolute top-[-130px] right-[-130px] size-72 duration-400 ease-linear transition-all bg-gradient-to-r from-blue-400 to-pink-600 dark:from-yellow-200 dark:to-red-500 transform scale-[1.80] rounded-full blur-3xl " />
-      <div className="p-4">
-        <Snowfall snowflakeCount={20} />
-        <div className="flex flex-col md:flex-row gap-4">
-          <div className="relative overflow-hidden w-full md:min-w-[520px] md:h-[260px] rounded-2xl">
+      <Snowfall snowflakeCount={20} />
+      <div className="absolute top-[-130px] right-[-130px] size-72 duration-400 ease-linear transition-all bg-gradient-to-r from-white to-white dark:from-yellow-200 dark:to-red-500 transform scale-[1.80] rounded-full blur-3xl " />
+      <div className="p-4 w-full flex flex-col md:flex-row gap-4">
+        <div className="w-full md:w-[40%] flex flex-col gap-4">
+          <div className="relative overflow-hidden w-full md:h-[260px] h-[200px] rounded-2xl">
             <video
               className="absolute h-full w-full object-cover"
               autoPlay
@@ -38,15 +38,22 @@ const DashBoard = ({ userId, listStudyTime, todayTimeStudy, monthTimeStudy }: Da
               <source src="/assets/lofi_christmas.mp4" type="video/mp4" />
             </video>
           </div>
-          <div className="min-w-[340px]">
+          <div className="md:hidden w-full md:w-[60%] flex flex-col md:flex-row gap-4">
             <TimeLearning data={{ todayTimeStudy, monthTimeStudy }} />
+            <div className="w-full bg-transparent"></div>
           </div>
-          <div className="w-full shadow-xl bg-transparent border border-gray-800 rounded-2xl"></div>
+          <div className="w-full">
+            <CommitGrid listStudyTime={listStudyTime || []} />
+          </div>
+        </div>
+
+        <div className="hidden w-full md:w-[60%] md:flex flex-col md:flex-row gap-4">
+          <TimeLearning data={{ todayTimeStudy, monthTimeStudy }} />
+          <div className="w-full bg-transparent"></div>
         </div>
         {/* <OnlineStatus userId={userId} /> */}
         <ShootingStars className="absolute inset-0 z-[-1]" />
         <StarsBackground className="absolute inset-0 z-[-2]" />
-        <CommitGrid listStudyTime={listStudyTime || []} />
       </div>
     </div>
   )

@@ -132,14 +132,13 @@ export const createSection = async (section: SectionType) => {
     if (section.boardId) {
       const response = await findBoardById(section.boardId)
       if (response.success) {
-        const res = await addDoc(collection(db, "section"), {
+        await addDoc(collection(db, "section"), {
           ...section,
           createdAt: serverTimestamp(),
         })
         return {
           success: true,
           message: "Tạo học phần thành công",
-          res,
         }
       } else {
         return response
