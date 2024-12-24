@@ -16,6 +16,7 @@ import { useRouter } from "next/navigation"
 import { useParams } from "next/navigation"
 import Papa from "papaparse"
 import Loading from "@/components/ui/Loading"
+import { set } from "react-hook-form"
 
 interface CreateVocabularyProps {
   userId: string
@@ -87,7 +88,7 @@ const CreateVocabulary = ({ userId, displayName, photoURL }: CreateVocabularyPro
       },
       listInput,
     }
-
+    setLoadingUpload(true)
     const res = await createSection(data)
     if (res?.success) {
       toast.success(res.message)
