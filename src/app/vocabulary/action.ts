@@ -18,6 +18,7 @@ import {
   writeBatch,
   updateDoc,
   limit as firestoreLimit,
+  startAfter,
 } from "firebase/firestore"
 
 export const createBoard = async (data: any) => {
@@ -496,57 +497,67 @@ export const getMonthlyStudyTime = async (userId: string): Promise<number> => {
 }
 
 export const getAllSectionPublic = async (page: number = 1, limit: number = 20) => {
-  // Tính toán số lượng tài liệu cần bỏ qua dựa trên trang hiện tại và giới hạn
-  const offset = (page - 1) * limit
-
   try {
-    const sectionsRef = collection(db, "section") // Tham chiếu đến collection "section"
-    const q = query(
-      sectionsRef,
-      where("isPublic", "==", true),
-      orderBy("createdAt", "desc"),
-      firestoreLimit(limit) // Áp dụng giới hạn cho truy vấn
-    )
+    const sectionsRef = collection(db, "section")
+    const totalQuery = query(sectionsRef, where("isPublic", "==", true))
+    const totalSnapshot = await getDocs(totalQuery)
+    const totalDocuments = totalSnapshot.size
+    const totalPage = Math.ceil(totalDocuments / limit)
 
-    const querySnapshot = await getDocs(q) // Lấy tài liệu từ Firestore
-
-    // Kiểm tra xem có cần bỏ qua tài liệu cho phân trang hay không
-    let sections: any[] = []
-    if (offset > 0) {
-      // Nếu offset lớn hơn 0, chúng ta cần bỏ qua 'offset' tài liệu đầu tiên
-      const allSections = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        title: doc.data().title || "",
-        length: doc.data().listInput?.length || 0,
-        order: doc.data().order || 0,
-        user: doc.data().user || {},
-      }))
-
-      sections = allSections.slice(offset, offset + limit) // Cắt mảng để lấy tài liệu cho trang hiện tại
-    } else {
-      // Nếu không có offset, chỉ cần lấy 'limit' tài liệu đầu tiên
-      sections = querySnapshot.docs
-        .map((doc) => ({
-          id: doc.id,
-          title: doc.data().title || "",
-          length: doc.data().listInput?.length || 0,
-          order: doc.data().order || 0,
-          user: doc.data().user || {},
-        }))
-        .slice(0, limit)
+    let lastDoc = null
+    if (page > 1) {
+      // Get the last document from the previous page
+      const previousPageQuery = query(
+        sectionsRef,
+        where("isPublic", "==", true),
+        orderBy("createdAt", "desc"),
+        firestoreLimit((page - 1) * limit)
+      )
+      const previousPageSnapshot = await getDocs(previousPageQuery)
+      lastDoc = previousPageSnapshot.docs[previousPageSnapshot.docs.length - 1]
     }
+
+    // Build query with startAfter if not first page
+    const q = lastDoc
+      ? query(
+          sectionsRef,
+          where("isPublic", "==", true),
+          orderBy("createdAt", "desc"),
+          startAfter(lastDoc),
+          firestoreLimit(limit)
+        )
+      : query(
+          sectionsRef,
+          where("isPublic", "==", true),
+          orderBy("createdAt", "desc"),
+          firestoreLimit(limit)
+        )
+
+    const querySnapshot = await getDocs(q)
+
+    const sections = querySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      title: doc.data().title || "",
+      length: doc.data().listInput?.length || 0,
+      order: doc.data().order || 0,
+      user: doc.data().user || {},
+    }))
 
     return {
       success: true,
-      sections, // Trả về danh sách sections
-      message: "Lấy sections public thành công", // Thông báo thành công
+      sections,
+      totalPage,
+      currentPage: page,
+      message: "Lấy sections public thành công",
     }
   } catch (error) {
-    const firestoreError = error as FirestoreError // Xử lý lỗi
+    const firestoreError = error as FirestoreError
     return {
       success: false,
       sections: [],
-      message: "Không thể lấy danh sách section public, vui lòng thử lại sau.", // Thông báo lỗi
+      totalPage: 0,
+      currentPage: page,
+      message: "Không thể lấy danh sách section public, vui lòng thử lại sau.",
       error: firestoreError,
     }
   }
