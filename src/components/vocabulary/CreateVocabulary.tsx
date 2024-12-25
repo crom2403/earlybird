@@ -16,7 +16,6 @@ import { useRouter } from "next/navigation"
 import { useParams } from "next/navigation"
 import Papa from "papaparse"
 import Loading from "@/components/ui/Loading"
-import { set } from "react-hook-form"
 
 interface CreateVocabularyProps {
   userId: string
@@ -106,6 +105,9 @@ const CreateVocabulary = ({ userId, displayName, photoURL }: CreateVocabularyPro
       return
     }
 
+    // Reset giá trị của input file để cho phép chọn lại cùng file
+    event.target.value = ""
+
     // Kiểm tra xem file có phải là CSV không
     if (file.type !== "text/csv" && !file.name.endsWith(".csv")) {
       toast.error("Vui lòng chọn file CSV!")
@@ -136,8 +138,8 @@ const CreateVocabulary = ({ userId, displayName, photoURL }: CreateVocabularyPro
 
         const newInputs = results.data?.map((row: any, index: number) => ({
           id: index + 1,
-          terminology: row?.terminology || "", // Thay đổi tên trường nếu cần
-          define: row?.define || "", // Thay đổi tên trường nếu cần
+          terminology: row?.terminology || "",
+          define: row?.define || "",
         }))
         setLoadingUpload(false)
         setListInput(newInputs)

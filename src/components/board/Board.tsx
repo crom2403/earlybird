@@ -140,7 +140,7 @@ const Board = ({
   return (
     <div
       className={cn(
-        "w-full rounded-xl flex flex-col gap-4 p-4 border",
+        "w-full rounded-xl flex flex-col gap-2 p-3 md:p-4 md:gap-4  border",
         boardData.color === "orange" ? "bg-board-orange-background border-board-orange-border" : "",
         boardData.color === "blue" ? "bg-board-blue-background border-board-blue-border" : "",
         boardData.color === "green" ? "bg-board-green-background border-board-green-border" : "",
@@ -255,7 +255,8 @@ const Board = ({
               : ""
           )}
         >
-          <Plus className="size-5 mr-2" /> <p>Tạo học phần mới</p>
+          <Plus className="size-4 md:size-5 md:mr-2" />{" "}
+          <p className="text-xs md:text-base">Tạo học phần mới</p>
         </div>
       </Link>
 

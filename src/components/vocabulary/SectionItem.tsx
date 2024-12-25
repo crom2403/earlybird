@@ -9,7 +9,7 @@ interface SectionItemProps {
 }
 const SectionItem = ({ section, dragHandleProps }: SectionItemProps) => {
   return (
-    <div className="bg-white rounded-xl px-4 py-2 cursor-pointer z-50">
+    <div className="bg-white rounded-xl px-2 md:px-4 py-2 cursor-pointer z-50">
       <div className="flex items-center justify-between text-black">
         <Link href={`/vocabulary/learn/${section.id}`} className="w-full">
           <div className="font-bold line-clamp-1">{section.title}</div>

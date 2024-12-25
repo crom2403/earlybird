@@ -70,7 +70,7 @@ const ButtonCreateNewBoard = ({
           <Image
             src="/gif/background_dialog_cat.gif"
             alt="cat"
-            className="w-full object-cover rounded-s-md"
+            className="w-full min-h-[230px] object-cover rounded-s-md"
             width={150}
             height={220}
           />

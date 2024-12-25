@@ -29,6 +29,11 @@ import { db } from "@/lib/firebase"
 import { doc, writeBatch } from "firebase/firestore"
 import { BoardType } from "@/types/vocabulary"
 import { getAllBoardByUser, ResponseSection } from "@/app/vocabulary/action"
+import Loading from "@/app/vocabulary/loading"
+import Snowfall from "react-snowfall"
+import { ShootingStars } from "@/components/ui/shooting-stars"
+import { StarsBackground } from "@/components/ui/stars-background"
+import BackgroundUniverse from "@/components/background/BackgroundUniverse"
 
 // Component sortable board riêng
 export const SortableBoard = ({
@@ -67,6 +72,7 @@ const MyVocabulary = ({
   listSection: ResponseSection[] | []
 }) => {
   const [boards, setBoards] = useState<BoardType[]>([])
+  const [loading, setLoading] = useState<boolean>(true)
 
   // Cấu hình sensors cho trải nghiệm kéo thả đa dạng
   const sensors = useSensors(
@@ -83,27 +89,21 @@ const MyVocabulary = ({
       try {
         // Tạo batch để cập nhật nhiều document
         const batch = writeBatch(db)
-
         // Tạo bản sao mới của boards để không ảnh hưởng trực tiếp
         const newBoards = [...boards]
         const oldIndex = newBoards.findIndex((board) => board.id === active.id)
         const newIndex = newBoards.findIndex((board) => board.id === over?.id)
-
         // Di chuyển phần tử
         const reorderedBoards = arrayMove(newBoards, oldIndex, newIndex)
-
         // Cập nhật order cho từng board
         reorderedBoards.forEach((board, index) => {
           const boardRef = doc(db, "board", board.id)
           batch.update(boardRef, { order: index })
         })
-
         // Commit batch
         await batch.commit()
-
         // Cập nhật state local
         setBoards(reorderedBoards)
-
         toast.success("Thứ tự học phần đã được cập nhật")
       } catch (error) {
         console.error("Lỗi khi cập nhật thứ tự:", error)
@@ -119,17 +119,20 @@ const MyVocabulary = ({
       ? (boardRes.boards as BoardType[]).sort((a, b) => (a.order || 0) - (b.order || 0))
       : []
     setBoards(sortedBoards)
+    setLoading(false)
   }
   useEffect(() => {
     handleGetAllBoardByUser()
   }, [])
+
+  if (loading) return <Loading />
 
   return (
     <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
       <div>
         <ButtonCreateNewBoard userId={userId} setBoards={setBoards} />
         <SortableContext items={boards.map((board) => board.id)} strategy={rectSortingStrategy}>
-          <div className="w-full grid grid-cols-1 md:grid-cols-4 gap-4 mt-4">
+          <div className="w-full grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
             {boards?.map((board) => (
               <SortableBoard key={board.id} board={board}>
                 <Board
@@ -143,6 +146,7 @@ const MyVocabulary = ({
             ))}
           </div>
         </SortableContext>
+        <BackgroundUniverse />
       </div>
     </DndContext>
   )

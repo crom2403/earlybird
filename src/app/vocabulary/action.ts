@@ -17,6 +17,7 @@ import {
   doc,
   writeBatch,
   updateDoc,
+  limit as firestoreLimit,
 } from "firebase/firestore"
 
 export const createBoard = async (data: any) => {
@@ -491,5 +492,62 @@ export const getMonthlyStudyTime = async (userId: string): Promise<number> => {
   } catch (error) {
     console.error("Error fetching study time:", error) // In ra lỗi nếu có
     return 0 // Trả về mảng rỗng nếu có lỗi
+  }
+}
+
+export const getAllSectionPublic = async (page: number = 1, limit: number = 20) => {
+  // Tính toán số lượng tài liệu cần bỏ qua dựa trên trang hiện tại và giới hạn
+  const offset = (page - 1) * limit
+
+  try {
+    const sectionsRef = collection(db, "section") // Tham chiếu đến collection "section"
+    const q = query(
+      sectionsRef,
+      where("isPublic", "==", true),
+      orderBy("createdAt", "desc"),
+      firestoreLimit(limit) // Áp dụng giới hạn cho truy vấn
+    )
+
+    const querySnapshot = await getDocs(q) // Lấy tài liệu từ Firestore
+
+    // Kiểm tra xem có cần bỏ qua tài liệu cho phân trang hay không
+    let sections: any[] = []
+    if (offset > 0) {
+      // Nếu offset lớn hơn 0, chúng ta cần bỏ qua 'offset' tài liệu đầu tiên
+      const allSections = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        title: doc.data().title || "",
+        length: doc.data().listInput?.length || 0,
+        order: doc.data().order || 0,
+        user: doc.data().user || {},
+      }))
+
+      sections = allSections.slice(offset, offset + limit) // Cắt mảng để lấy tài liệu cho trang hiện tại
+    } else {
+      // Nếu không có offset, chỉ cần lấy 'limit' tài liệu đầu tiên
+      sections = querySnapshot.docs
+        .map((doc) => ({
+          id: doc.id,
+          title: doc.data().title || "",
+          length: doc.data().listInput?.length || 0,
+          order: doc.data().order || 0,
+          user: doc.data().user || {},
+        }))
+        .slice(0, limit)
+    }
+
+    return {
+      success: true,
+      sections, // Trả về danh sách sections
+      message: "Lấy sections public thành công", // Thông báo thành công
+    }
+  } catch (error) {
+    const firestoreError = error as FirestoreError // Xử lý lỗi
+    return {
+      success: false,
+      sections: [],
+      message: "Không thể lấy danh sách section public, vui lòng thử lại sau.", // Thông báo lỗi
+      error: firestoreError,
+    }
   }
 }
