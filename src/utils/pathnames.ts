@@ -2,9 +2,8 @@ export const pathnames = {
   home: "/",
   dashboard: "/dashboard",
   vocabulary: "/vocabulary",
-  setting: "#",
-  contact: "#",
-  about: "#",
-  help: "#",
+  contact: "/contact",
+  about: "/about",
+  help: "/help",
   login: "/login",
 }
