@@ -2,7 +2,7 @@
 import React from "react"
 import Link from "next/link"
 import { ThemeToggle } from "@/components/ui/theme-toggle"
-import { CircleHelp, FolderKanban, Handshake, House, LayoutDashboard, Rabbit } from "lucide-react"
+import { FolderKanban, Handshake, House, LayoutDashboard, Rabbit } from "lucide-react"
 
 const NavbarMobile = () => {
   const links = [
@@ -31,11 +31,6 @@ const NavbarMobile = () => {
       title: "Contact",
       icon: <Handshake className="h-full w-full text-neutral-500 dark:text-neutral-300" />,
       href: "/contact",
-    },
-    {
-      title: "Help",
-      icon: <CircleHelp className="h-full w-full text-neutral-500 dark:text-neutral-300" />,
-      href: "/help",
     },
   ]
 

@@ -4,6 +4,5 @@ export const pathnames = {
   vocabulary: "/vocabulary",
   contact: "/contact",
   about: "/about",
-  help: "/help",
   login: "/login",
 }

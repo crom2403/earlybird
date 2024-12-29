@@ -217,7 +217,7 @@ const VocabularyEditor = ({
 
   return (
     <div className="w-full flex items-center justify-center">
-      <div className={`flex w-full flex-col gap-4 m-4 max-w-[600px]`}>
+      <div className={`flex w-full flex-col gap-4 m-4 max-w-[800px]`}>
         <div className="flex w-full flex-col gap-2">
           <div
             className={cn(
@@ -312,7 +312,7 @@ const VocabularyEditor = ({
           </div>
           <div className="flex fireworks-container relative">
             <div
-              className={`text-[#696c6e] text-right px-2 py-[10px] select-none text-xl`}
+              className={`text-[#696c6e] text-right px-2 py-[10px] select-none text-lg md:text-xl`}
               style={{
                 fontFamily: "monospace",
                 lineHeight: "1.6",
@@ -331,11 +331,11 @@ const VocabularyEditor = ({
                 style={{
                   fontFamily: "monospace",
                   lineHeight: "1.6",
-                  minHeight: "300px",
+                  minHeight: "400px",
                   outline: "none",
                   border: "none",
                 }}
-                className="text-xl focus:outline-none focus:border-none ring-0 focus:ring-0"
+                className="text-lg md:text-xl focus:outline-none focus:border-none ring-0 focus:ring-0"
               />
             </div>
           </div>

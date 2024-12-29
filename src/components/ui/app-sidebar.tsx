@@ -1,4 +1,4 @@
-import { CircleHelp, Contact, Home, LayoutDashboard, Rabbit } from "lucide-react"
+import { Contact, Home, LayoutDashboard, Rabbit } from "lucide-react"
 
 import {
   Sidebar,
@@ -39,11 +39,6 @@ const items = [
     title: "About",
     url: pathnames.about,
     icon: Rabbit,
-  },
-  {
-    title: "Help",
-    url: pathnames.help,
-    icon: CircleHelp,
   },
 ]
 
