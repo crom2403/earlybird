@@ -10,7 +10,7 @@ const Contact = () => {
         {/* form area */}
         <form className="lg:w-[60%] w-full">
           <div className="lg:w-[80%] w-full mx-auto">
-            <div className="text-white">
+            <div className="dark:text-white">
               <h1 className="text-[1.7rem] font-[600] leading-[35px]">
                 Let’s connect constellations
               </h1>
@@ -25,7 +25,7 @@ const Contact = () => {
                 <input
                   type="text"
                   placeholder="Your name"
-                  className="peer border-[#383844] border rounded-md outline-none px-4 py-3 w-full bg-[#22222f] text-gray-400 transition-colors duration-300"
+                  className="peer border-[#383844] border rounded-md outline-none px-4 py-3 w-full bg-slate-100 dark:bg-[#22222f] text-gray-400 transition-colors duration-300"
                 />
               </div>
 
@@ -33,7 +33,7 @@ const Contact = () => {
                 <input
                   type="email"
                   placeholder="Email address"
-                  className="peer border-[#383844] border rounded-md outline-none px-4 py-3 w-full bg-[#22222f] text-gray-400 transition-colors duration-300"
+                  className="peer border-[#383844] border rounded-md outline-none px-4 py-3 w-full bg-slate-100 dark:bg-[#22222f] text-gray-400 transition-colors duration-300"
                 />
               </div>
             </div>
@@ -41,7 +41,7 @@ const Contact = () => {
             <div className="flex flex-col gap-[5px] w-full mt-[20px]">
               <textarea
                 placeholder="Write message"
-                className="peer min-h-[200px] border-[#383844] border rounded-md outline-none px-4 bg-[#22222f] py-3 w-full text-gray-400 transition-colors duration-300"
+                className="peer min-h-[200px] border-[#383844] border rounded-md outline-none px-4 bg-slate-100 dark:bg-[#22222f] py-3 w-full text-gray-400 transition-colors duration-300"
               ></textarea>
             </div>
 

@@ -6,7 +6,7 @@
 import { HeroHighlight } from "../ui/hero-highlight"
 import React, { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { DeleteIcon, Download, Plus, Scan } from "lucide-react"
+import { CircleHelp, DeleteIcon, Download, Plus, Scan } from "lucide-react"
 import { DoubleInputVocabulary } from "@/components/vocabulary/DoubleInputVocabulary"
 import { cn } from "@/lib/utils"
 import { Input } from "@/components/ui/input"
@@ -16,6 +16,17 @@ import { useRouter } from "next/navigation"
 import { useParams } from "next/navigation"
 import Papa from "papaparse"
 import Loading from "@/components/ui/Loading"
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogDescription,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import Image from "next/image"
 
 interface CreateVocabularyProps {
   userId: string
@@ -188,6 +199,36 @@ const CreateVocabulary = ({ userId, displayName, photoURL }: CreateVocabularyPro
               <div className="size-[18px] rounded-full bg-white"></div>
             </div>
             <p>Chế độ public (Tất cả mọi người có thể xem)</p>
+
+            <Dialog>
+              <DialogTrigger>
+                <CircleHelp className="text-blue-600" />
+              </DialogTrigger>
+              <DialogContent className="w-[400px] md:w-[500px]">
+                <DialogHeader>
+                  <DialogTitle className="text-lg font-semibold">
+                    Hướng dẫn sử dụng tính năng trích xuất từ vựng từ file CSV, Excel, GG Sheet
+                  </DialogTitle>
+                  <p>
+                    Bắt buộc dòng{" "}
+                    <span className="text-orange-600">
+                      A1 phải là terminology và B1 phải là define
+                    </span>{" "}
+                    như hình bên dưới
+                  </p>
+                  <p className="pb-4">
+                    <span>Lưu ý:</span> Một học phần chỉ có thể chứa tối đa 200 từ vựng!
+                  </p>
+                  <Image
+                    alt="help_csv"
+                    src="/png/help_csv.png"
+                    width={400}
+                    height={400}
+                    className="w-full object-cover"
+                  />
+                </DialogHeader>
+              </DialogContent>
+            </Dialog>
           </div>
         </div>
         <div className="md:mt-8 relative inline-flex h-12 overflow-hidden rounded-md p-[6px] focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50">
