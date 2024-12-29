@@ -2,14 +2,24 @@
 import { HeroHighlight } from "../ui/hero-highlight"
 import React, { useCallback, useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
-import { DeleteIcon, Download, Plus, Scan } from "lucide-react"
+import { DeleteIcon, Download, Edit2, Plus, Scan, Trash } from "lucide-react"
 import { DoubleInputVocabulary } from "./DoubleInputVocabulary"
 import { cn } from "@/lib/utils"
 import { Input } from "@/components/ui/input"
 import { toast } from "sonner"
-import { getSectionById, updateSection } from "@/app/vocabulary/action"
+import { getSectionById, updateSection, deleteSection } from "@/app/vocabulary/action"
 import { useRouter } from "next/navigation"
 import { SectionType } from "@/types/vocabulary"
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogDescription,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
 interface EditVocabularyProps {
   sectionId: string
 }
@@ -18,6 +28,7 @@ const EditVocabulary = ({ sectionId }: EditVocabularyProps) => {
   const [loading, setLoading] = useState(true)
   const [listInput, setListInput] = useState([{ id: 1, terminology: "", define: "" }])
   const [isPublic, setIsPublic] = useState(false)
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false)
   const [title, setTitle] = useState("")
   const router = useRouter()
   const fetchSection = useCallback(async () => {
@@ -124,6 +135,23 @@ const EditVocabulary = ({ sectionId }: EditVocabularyProps) => {
       </div>
     )
   }
+
+  const handleDeleteSection = async () => {
+    try {
+      const res = await deleteSection(sectionId)
+      if (res?.success) {
+        toast.success(res.message)
+        router.push("/vocabulary")
+      } else {
+        toast.error(res.message)
+      }
+    } catch (error) {
+      toast.error(
+        `Lỗi khi xóa học phần: ${error instanceof Error ? error.message : "Unknown error"}`
+      )
+    }
+  }
+
   return (
     <div className="relative">
       <HeroHighlight className="absolute inset-0 z-0">
@@ -194,13 +222,43 @@ const EditVocabulary = ({ sectionId }: EditVocabularyProps) => {
             </button>
             <Button
               type="submit"
-              className="border-blue-700 text-blue-700 bg-blue-50 hover:text-blue-500 hover:bg-blue-50 hover:border-blue-500"
+              className="border-blue-700 text-blue-700 dark:hover:text-blue-700  bg-blue-50 hover:text-blue-500 hover:bg-blue-50 hover:border-blue-500"
               variant="outline"
             >
-              <Plus className="mr-2" />
+              <Edit2 className="mr-2" />
               Cập nhật học phần
             </Button>
           </form>
+          <Dialog open={openDeleteDialog} onOpenChange={setOpenDeleteDialog}>
+            <DialogTrigger>
+              <Button
+                type="submit"
+                className="min-w-full mt-2 border-red-700 text-red-700 dark:hover:text-red-700 bg-red-50 hover:text-red-500 hover:bg-blue-50 hover:border-blue-500"
+                variant="outline"
+              >
+                <Trash className="mr-2" />
+                Xóa học phần
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Xóa học phần</DialogTitle>
+                <DialogDescription>
+                  Bạn có chắc chắn muốn xóa học phần này? Hành động này không thể hoàn tác.
+                </DialogDescription>
+              </DialogHeader>
+              <DialogFooter className="sm:justify-end">
+                <DialogClose asChild>
+                  <Button type="button" variant="secondary">
+                    Không
+                  </Button>
+                </DialogClose>
+                <Button type="button" variant="destructive" onClick={handleDeleteSection}>
+                  Xóa
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         </div>
       </HeroHighlight>
     </div>

@@ -19,6 +19,7 @@ import {
   updateDoc,
   limit as firestoreLimit,
   startAfter,
+  deleteDoc,
 } from "firebase/firestore"
 
 export const createBoard = async (data: any) => {
@@ -311,6 +312,25 @@ export const deleteBoardAndSections = async (boardId: string): Promise<ActionRes
     return {
       success: false,
       message: "Không thể xóa nhóm, vui lòng thử lại sau",
+      error: firestoreError,
+    }
+  }
+}
+
+// Hàm xóa section
+export const deleteSection = async (sectionId: string): Promise<ActionResponse> => {
+  try {
+    const sectionRef = doc(db, "section", sectionId)
+    await deleteDoc(sectionRef)
+    return {
+      success: true,
+      message: "Đã xóa học phần thành công",
+    }
+  } catch (error) {
+    const firestoreError = error as FirestoreError
+    return {
+      success: false,
+      message: "Không thể xóa học phần, vui lòng thử lại sau",
       error: firestoreError,
     }
   }
