@@ -1,7 +1,8 @@
+import Help from "@/components/help/Help"
 import React from "react"
 
 const page = () => {
-  return <div>help</div>
+  return <Help />
 }
 
 export default page
